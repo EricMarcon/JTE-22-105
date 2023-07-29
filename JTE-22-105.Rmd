@@ -38,16 +38,16 @@ csl: JTropEcol.cls
 toc-depth: 2
 always_allow_html: yes
 output:
-  bookdown::html_document2:
-    base_format: distill::distill_article
-    pandoc_args: ["--number-sections"]
-    toc: yes
-    toc_float: yes
   bookdown::pdf_book:
     template: latex/template.tex
     citation_package: natbib
     latex_engine: xelatex
     keep_tex: no
+  bookdown::html_document2:
+    base_format: distill::distill_article
+    pandoc_args: ["--number-sections"]
+    toc: yes
+    toc_float: yes
   bookdown::word_document2:
      reference_docx: "images/template.docx"
 ---
@@ -294,10 +294,10 @@ At smaller scales, i.e. inside a single community, the relation between area and
 It is driven by statistical models that address incomplete sampling [@Shen2003; @Beguinot2015a].
 After replacing the sampled area by the number of individuals it contains, well-known estimators of richness such as Chao's [@Chao1984] or the jackknife [@Burnham1978] apply.
 
-The Chao1 estimator is 
+The Chao1 estimator is
 
 \begin{equation}
-  {\hat{S}}_\mathit{Chao1} = s_{obs} + \frac{(n-1)f_1^2}{2nf_2},
+  {\hat{S}}_{\mathit{Chao1}} = s_{obs} + \frac{(n-1)f_1^2}{2nf_2},
   (\#eq:Chao1)
 \end{equation}
 
@@ -310,7 +310,7 @@ Increasing the order implies increasing both the estimate and its uncertainty: s
 For large $n$, the jackknife estimator of order 3, used below, is
 
 \begin{equation}
-  {\hat{S}}_\mathit{Jack3} = s_{obs} + 3f_1 - 3f_2 + f_3.
+  {\hat{S}}_{\mathit{Jack3}} = s_{obs} + 3f_1 - 3f_2 + f_3.
   (\#eq:Jack3)
 \end{equation}
 
