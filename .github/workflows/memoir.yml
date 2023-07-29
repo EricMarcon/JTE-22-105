@@ -23,6 +23,7 @@ jobs:
           options(install.packages.check.source = "no")
           install.packages(c("distill", "downlit", "memoiR", "rmdformats", "tinytex"))
           tinytex::install_tinytex()
+          remotes::install_github("kupietz/kableExtra")
         shell: Rscript {0}
       - name: Private key
         run: |
