@@ -21,7 +21,18 @@ affiliation:
 corrauthor:
     email: eric.marcon@agroparistech.fr
 abstract: >
-  Abstract
+  The biodiversity of tropical rainforest is difficult to assess. 
+  Yet, its estimation is necessary for conservation purposes, to evaluate our level of knowledge and the risks faced by the forest in relation to global change. 
+  Our contribution is to estimate the regional richness of tree species from local but widely spread inventories.
+  
+  We reviewed the methods available, which are nonparametric estimators based on abundance or occurrence data, log-series extrapolation and the universal species-area relationship based on maximum entropy. 
+  Appropriate methods depend on the scale considered. 
+  Harte's self-similarity model is suitable at the regional scale, while the log-series extrapolation is not.
+  
+  GuyaDiv is a network of forest plots installed over the whole territory of French Guiana, where trees over 10 cm DBH are identified. 
+  We used its information (1315 species censused in 68 one-hectare plots) to estimate the exponent of the species-area relationship, assuming Arrhenius’s power law. 
+  We could then extrapolate the number of species from three local, wide inventories (over 2.5 km^2^).
+  We evaluated the number of tree species around 2200 over the territory.
 keywords: [Biodiversity, Tropical Forest, Self-Similarity, French Guiana]
 date: "`r format(Sys.time(), '%Y %B %d')`"
 archive: "`r format(Sys.time(), '%d %B %Y')`"
@@ -165,7 +176,7 @@ It now consists of 243 plots of various sizes and shapes, distributed in various
 We took into account the `r guyadiv_plots` one-hectare plots of the network. 
 They are located in `r guyadiv_locations` sites, which provides fairly good coverage of the variability of the forest in French Guiana.
 
-(ref:GuyaDivMap) The GuyaDiv network of tropical forest plots.
+(ref:GuyaDivMap) The GuyaDiv network of tropical forest plots. All trees above 10 cm DBH are localized, measured and determined botanically at species level. Each red point represents a location where several forest plots were established. The size of the points corresponds to the total area of theirs plots. Paracou, Piste de Saint-Elie and Nouragues are denoted PAR, PSE and NOU.
 ```{r GuyaDivMap, fig.cap="(ref:GuyaDivMap)", include=TRUE}
 knitr::include_graphics('images/GuyaDiv2021.jpg')
 ```
@@ -828,23 +839,6 @@ The estimated number of species is thus obtained for $n$ equal to 8 Mha times `r
 The extrapolation from the average 1-ha plot is `r round(s_8Mha_Guyadiv)` species.
 Since it is far less reliable than those from the wide inventories, with 7 to 9 more doubling steps, we do not retain it to produce the average estimate of the universal SAR. Finally, we obtain `r round((s_8Mha_Nouragues + s_8Mha_St_Elie + s_8Mha_Paracou) / 3)` species.
 
-## Summary
-
-The estimated number of species according to the different methods is summarized in table \@ref(tab:summary).
-
-(ref:summary) Estimated number of tree species in French Guiana, according to all methods detailed in the text.
-```{r summary, include=TRUE}
-options(knitr.kable.NA = '')
-tibble(
-  Method = c("Self-similarity", "Species accumulation (abundances)", "Species accumulation (occurences)", "Log-series extrapolation", "Universal species-area relationship "),
-  `Number of species` = c(S, S_best, S_Chao2, n_species, (s_8Mha_Nouragues + s_8Mha_St_Elie + s_8Mha_Paracou) / 3),
-  `Lower bound` = c(S - 2 * sigma_S, j3$CI[1], attr(S_Chao2, "CI")$CI[1], NA, round(s_8Mha_Paracou)),
-  `Upper bound` = c(S + 2 * sigma_S, j3$CI[2], attr(S_Chao2, "CI")$CI[2], NA, round(s_8Mha_Guyadiv))
-) %>% 
-  knitr::kable(caption="(ref:summary)", digits = 0, longtable = FALSE, booktabs = TRUE) %>%
-  kableExtra::kable_styling(bootstrap_options = "striped", full_width = TRUE)
-```
-
 
 # Discussion
 
@@ -951,7 +945,7 @@ On the log-log representation of figure \@ref(fig:harte2009sar), the species-are
 The arguments for overestimation are the same as those against the extrapolation of the log-series at the regional scale.
 
  
-## The number of species is around 2200
+## The number of species is around `r round(S/100)*100`
 
 Finally, our estimations of the number of tree species in the 8-million-hectare forest of French Guiana is close to `r round(S/100)*100`, with a quite wide confidence interval due to the variability in the estimation of both the number of trees in a squared kilometer and the power-law parameter.
 Their distribution is highly unequal: `r hdSpecies` species (`r round(hdSpecies / S * 100)`%) contain half the trees.
