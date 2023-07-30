@@ -123,14 +123,14 @@ set.seed(973)
 Biodiversity assessment in tropical moist forests is a practical challenge but a major goal considering they are the most diverse terrestrial ecosystems.
 Estimating the number of tree species is made possible by the long-term effort of sampling resulting in thousands of forest plots organized in various networks. 
 In French Guiana, the GuyaDiv network consists of close to 250 plots across the whole forest.
-Based on similar datasets, the diversity of tree species has been estimated in Amazonia [@TerSteege2013; @TerSteege2020] and at the world scale [@Slik2015].
-The methods used in those studies are not appropriate to estimate regional diversity, i.e. at a smaller scale where dispersal limitation is critical.
+Based on similar datasets, the diversity of tree species has been estimated in Amazonia [@TerSteege2013; @TerSteege2020] and at the world scale [@Slik2015] and, with a different methodology, by @CazzollaGatti2022.
+Regional diversity, i.e. at a intermediate scales between single communities and the metacommunity in the sense of @Hubbell2001, brought less attention: this motivated this study, along with a particular interest for the forest of French Guiana.
 
 The main contribution of this paper is to estimate the number of tree species at the regional scale, in French Guiana (8 million hectares of tropical moist forest with no ecological boundary to distinguish them from the rest of Amazonia) and demonstrate which method is valid to do so.
-We build on Harte's self-similarity model [@Harte1999] that implies the power-law relationship of @Arrhenius1921 and provides a technique to evaluate its parameters [@Harte1999a], previously applied by @Krishnamani2004 in the Western Ghats, India, a 60,000-ha tropical forest with around 1,000 species.
+We build on Harte's self-similarity model [@Harte1999] that implies the power-law relationship of @Arrhenius1921 and provides a technique to evaluate its parameters [@Harte1999a], previously applied by @Krishnamani2004 in the Western Ghats, India, a 60,000-ha tropical forest with around 1,000 tree species.
 
 We also compare this method to several alternatives: nonparametric estimators including the grid-aggregated occurrence-based estimation by @CazzollaGatti2022, log-series extrapolation [@TerSteege2013] and the universal species-area relationship based on maximum entropy [@Harte2009].
-We discuss in depth which method may be applied according to the addressed scale.
+We discuss in depth which method may be applied according to the addressed spatial scale.
 
 
 # Methods
@@ -169,7 +169,7 @@ It now consists of 243 plots of various sizes and shapes, distributed in various
 We took into account the `r guyadiv_plots` one-hectare plots of the network. 
 They are located in `r guyadiv_locations` sites, which provides fairly good coverage of the variability of the forest in French Guiana.
 
-(ref:GuyaDivMap) The GuyaDiv network. Paracou, Piste de Saint-Elie and Nouragues are denoted PAR, PSE and NOU.
+(ref:GuyaDivMap) The GuyaDiv network of tropical forest plots. All trees above 10 cm DBH are localized, measured and determined botanically at species level. Each red point represents a location where several forest plots were established. The size of the points corresponds to the total area of theirs plots. Paracou, Piste de Saint-Elie and Nouragues are denoted PAR, PSE and NOU.
 ```{r GuyaDivMap, fig.cap="(ref:GuyaDivMap)", include=TRUE}
 knitr::include_graphics('images/GuyaDiv2021.jpg')
 ```
@@ -280,7 +280,7 @@ A0 <- 80000
 ```
 
 The confidence interval of the estimation of the number of species was assessed by combining the uncertainty in $c$ and $A^z$.
-The variance of $c$ was estimated from the three observed values.
+The variance of $c$ was estimated by the empirical variance of the values calculated at Paracou, Piste de Saint-Elie and Nouragues. 
 That of $A^z$ was obtained from the empirical distribution of $z$.
 The variance of their product was calculated (the formula and its derivation are in the appendix).
 Finally, we assumed the normality of the distribution of the product of the estimates to retain an approximate 95% confidence interval of $\pm$ 2 standard deviations.
@@ -288,7 +288,7 @@ Finally, we assumed the normality of the distribution of the product of the esti
 All analyses were made with R [@R] v. 4.3.1.
 
 
-## Non-parametric estimators
+## Nonparametric estimators
 
 At smaller scales, i.e. inside a single community, the relation between area and number of species is described by species accumulation curves [SAC: @Gotelli2001].
 It is driven by statistical models that address incomplete sampling [@Shen2003; @Beguinot2015a].
@@ -345,7 +345,7 @@ Its confidence interval is not available: the extrapolation of the curve is very
 
 @Harte2008 derived a universal species-area relationship based on the maximum entropy theory.
 Assuming only that the area, the total numbers of species and individuals, and the summed metabolic energy rate of all individuals are fixed, many features of the species distribution at any scale can be predicted.
-Of particular interest is the possibility to derive the number of species in a doubled area from the number of species in a sampled, reference area [@Harte2009;@Xu2012].
+Of particular interest is the possibility to derive the number of species in a doubled area from the number of species in a sampled, reference area [@Harte2009; @Xu2012].
 Starting from a local sample, that may be a single 1-ha plot or one of our large inventories, the area can be doubled until the target size is reached.
 
 The number of trees per hectare is estimated from the Guyadiv network to obtain a single starting point rather than a different one for each plot.
@@ -526,7 +526,7 @@ sigma_S <- sqrt(var_S)
 ```
 
 Finally, the estimated number of species is `r S %>% round(0)`.
-Taking into account the uncertainty about $z$, its 95% confidence interval is between `r (S-2*sigma_S) %>% round(0)` and `r (S+2*sigma_S) %>% round(0)`.
+Taking into account the uncertainty about $c$ and $z$, its 95% confidence interval is between `r (S-2*sigma_S) %>% round(0)` and `r (S+2*sigma_S) %>% round(0)`.
 
 ## Species accumulation
 
@@ -854,7 +854,7 @@ tibble(
 
 ## The species-area relationship varies accross scales
 
-We consider three different scales where different models apply.
+We consider three different spatial scales where different models apply.
 
 At the local scale, i.e. inside a single community, the relation between the area and the number of species is described by species accumulation curves [SAC: @Gotelli2001].
 It is driven by statistical models that address incomplete sampling [@Shen2003; @Beguinot2015a].
@@ -863,23 +863,23 @@ The distributions of local, tropical moist forest communities are often approxim
 This has been shown empirically [e.g. @Duque2017] and theoretically [@Preston1948; @Preston1962; @May1975].
 In the framework of the neutral theory [@Hubbell2001], the local community follows a zero-sum multinomial distribution, derived by @Volkov2003 but challenged empirically by @McGill2003, in favor of the log-normal distribution.
 
-The SAC is concave downwards since its slope is the probability for the next individual to belong to a new species [@Chao2013; @Grabchak2016], which decreases with the sampling effort.
-This means that the power law does not apply at the local scale.
-It can be estimated empirically [@Condit1996; @Plotkin2000a] but then the value of  $z$ depends on the distance, which is in contradiction with the model.
+The SAC, plotted as the number of species against the number of individuals in natural scale, is concave downwards since its slope is the probability for the next individual to belong to a new species [@Chao2013; @Grabchak2016], which decreases with the sampling effort.
+This means that the Arrhenius power law does not apply at the local scale.
+The power law can be estimated empirically [@Condit1996; @Plotkin2000a] but then the value of $z$ depends on the distance, which is in contradiction with the model, which relies on a constant $z$.
 
-At the regional scale, the assembly of local communities make a new pattern emerge, namely the power law of @Arrhenius1921.
+At the regional scale, the mixture of local communities make a new pattern emerge, namely the power law of @Arrhenius1921.
 Its origin is empirical, with a lot of support [e.g. @Dengler2009; @Triantis2012; @Williamson2001].
-Theoretically, @Hubbell2001 showed that the power law applied to intermediate scales of the neutral theory and  @Grilli2012 derived it from a spatially-explicit model only based on the clustering of species.
+Theoretically, @Hubbell2001 showed that the power law applied to intermediate scales of the neutral theory and @Grilli2012 derived it from a spatially-explicit model only based on the clustering of species.
 @Preston1962 showed that local, log-normal communities imply the power law at the regional scale.
 At this scale, the species-area relationship (SAR) properly speaking is not just a matter of accumulation due to sampling (SAC) but the consequence of the inclusion of different communities.
 
-A long empirical controversy [@Connor1979] opposed Arrhenius and @Gleason1922, who argued that the number of species predicted by the power law was far too high and proposed $\mathrm{S}(A)=z\ln A + c_g$ rather that the equivalent of eq.  \@ref(eq:Arrhenius), i.e. $\ln \mathrm{S}(A)=z\ln A + c_a$ (where $c_g$, $c_a$ and $c_f$ below are constants).
+A long empirical controversy [@Connor1979] opposed Arrhenius and @Gleason1922, who argued that the number of species predicted by the power law was far too high and proposed $\mathrm{S}(A)=z\ln A + c_g$ rather that the equivalent of eq. \@ref(eq:Arrhenius), i.e. $\ln \mathrm{S}(A)=z\ln A + c_a$ (where $c_g$, $c_a$ and $c_f$ below are constants).
 Actually, Gleason's model is equivalent to Fisher's, where $\mathrm{S}(A)=\alpha\ln A + c_f$ if the number of trees is large and is proportional to the area [@Engen1977].
 There is no theoretical support to apply Gleason's model at the regional scale [@GarciaMartin2006]; in other words, the regional distribution of species is not log-series.
 
 The widest scale is that of the metacommunity, in the sense of the neutral theory.
 Its follows a log-series distribution [@Hubbell2001] with Fisher's $\alpha$ equal to to $\theta$, known as the fundamental biodiversity number.
-The log-series does not apply to the local or regional scale: the empirical estimates of Fisher's $\alpha$ at these scales increase with the sampling size [e.g. @Condit1996], which is again in contradiction with the model.
+The log-series does not apply to the local or regional scale: the empirical estimates of Fisher's $\alpha$ at these scales increase with the sampling size [e.g. @Condit1996], which is again in contradiction with the model, which implies that $\alpha$ is a constant.
 At the regional scale, Fisher's $\alpha$ increases with area because Arrhenius's law, and not Gleason's law, is valid.
 Yet, our data fits a log-series distribution quite well (figure \@ref(fig:logseries)): empirical tests are not efficient to reject the model at the regional scale [@Connor1979].
 We must rely on theory.
@@ -899,11 +899,11 @@ The power law is equivalent to self-similarity [@Harte1999], justifying our pref
 The self-similarity model allows estimating the number of species of tropical forests at a regional scale.
 It requires a network of plots at a wide range of distances from each other to estimate Arrhenius's power law parameter.
 It should be completed by a continuous inventory whose size is consistent with the smallest scale of the power law.
-These constraints explain why the method has not been widely applied, beyond @Krishnamani2004 and this paper.
+These constraints explain why the method has not been widely applied, beyond @Krishnamani2004.
 
 As shown in figure \@ref(fig:slope), the fit of the linear model is not perfect.
 The theory does not address habitat variation, that is well-described in French Guiana [@Guitet2015b].
-The dissimilarity between plot pairs is thus explained by distance and habitat dissimilarity, the latter ignored in the model.
+The dissimilarity between plot pairs is thus explained by distance and habitat dissimilarity, with the latter ignored in the model.
 Yet, the estimation of $z$ is quite robust because the GuyaDiv network covers a wide range of habitats, allowing to cancel out local variability.
 Adding more plots or describing a few more species in the previous plots may not change $z$ significantly since it is obtained from the dissimilarity between plots.
 Its value `r z %>% round(3) %>% format(nsmall=3)` is in line with that of @Krishnamani2004 in another tropical forest: it is very small compared to the classical 0.25 of @Arrhenius1921 or 0.263 of @Preston1962. 
@@ -921,12 +921,12 @@ Ongoing efforts of botanists may increase a bit the value of $c$, implying a pro
 
 ## Chao2's estimator is a valid alternative
 
-Non-parametric estimators of richness are widely used to estimate the asymptotic richness of a community, because they are designed to estimate the number of unobserved species due to uncomplete sampling [@Colwell1994].
+Nonparametric estimators of richness are widely used to estimate the asymptotic richness of a community, because they are designed to estimate the number of unobserved species due to uncomplete sampling [@Colwell1994].
 Yet, their underlying assumptions are limited: they do not depend on any distribution model or scale of observation.
 The only constraint is independent and identically distributed (iid) sampling, even though at the local scale spatial aggregation is often neglected [@Picard2004].
 
 The asymptotic estimation based on the Chao1 or jackknife estimator is less than 1700 species, i.e. less than the total number of known species [@Molino2022].
-As already underlined by @TerSteege2013, this method is not appropriate at large scales because of severe undersampling: many local communities are just not included in the data.
+As already underlined by @TerSteege2013, nonparametric asymptotic estimation of richness is not appropriate at large scales because of severe undersampling: many local communities are just not included in the data.
 Yet, increasing the sampling effort would not be enough: mixing local samples (the 1-ha plots) to mimic an iid sampling of a whole region is clearly not a valid approximation, because each plot has its own distribution.
 
 @CazzollaGatti2022 applied a similar method on a large-scale grid (100 x 100 km cells) where species occurrences were reported in each cell.
@@ -951,6 +951,7 @@ For the same reasons, hyperdominance is less pronounced: `r round(hdSpecies / S 
 The universal species-area relationship [@Harte2008] allowed the extrapolation of observed richness up to the  8 million hectares of French Guiana.
 The number of species estimated from Paracou, Piste de Saint-Elie and Nouragues starting points (their number of species and area) is on average `r round((s_8Mha_Nouragues + s_8Mha_St_Elie + s_8Mha_Paracou) / 3)`, and over 4500 when extrapolating from an average Guyadiv 1-ha plot.
 Again, this model implies a log-series distribution as it integrates as few assumptions as possible [@Harte2008].
+On the log-log representation of figure \@ref(fig:harte2009sar), the species-area relationships are never linear, as predicted by the power law at the regional scale.
 The arguments for overestimation are the same as those against the extrapolation of the log-series at the regional scale.
 
  
