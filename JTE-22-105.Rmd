@@ -845,8 +845,8 @@ tibble(
   `Lower bound` = c(S - 2 * sigma_S, j3$CI[1], attr(S_Chao2, "CI")$CI[1], NA, round(s_8Mha_Paracou)),
   `Upper bound` = c(S + 2 * sigma_S, j3$CI[2], attr(S_Chao2, "CI")$CI[2], NA, round(s_8Mha_Guyadiv))
 ) %>% 
-  knitr::kable(caption="(ref:summary)", digits = 0, longtable = TRUE, booktabs = TRUE) %>%
-  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+  knitr::kable(caption="(ref:summary)", digits = 0, longtable = FALSE, booktabs = TRUE) %>%
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = TRUE)
 ```
 
 
@@ -954,7 +954,7 @@ Again, this model implies a log-series distribution as it integrates as few assu
 The arguments for overestimation are the same as those against the extrapolation of the log-series at the regional scale.
 
  
-# Conclusion
+## The number of species is around `r round(S/100)*100`
 
 Finally, our estimations of the number of tree species in the 8-million-hectare forest of French Guiana is close to `r round(S/100)*100`, with a quite wide confidence interval due to the variability in the estimation of both the number of trees in a squared kilometer and the power-law parameter.
 Their distribution is highly unequal: `r hdSpecies` species (`r round(hdSpecies / S * 100)`%) contain half the trees.
