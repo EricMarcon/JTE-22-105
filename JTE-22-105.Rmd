@@ -165,7 +165,7 @@ It now consists of 243 plots of various sizes and shapes, distributed in various
 We took into account the `r guyadiv_plots` one-hectare plots of the network. 
 They are located in `r guyadiv_locations` sites, which provides fairly good coverage of the variability of the forest in French Guiana.
 
-(ref:GuyaDivMap) The GuyaDiv network of tropical forest plots. All trees above 10 cm DBH are localized, measured and determined botanically at species level. Each red point represents a location where several forest plots were established. The size of the points corresponds to the total area of theirs plots. Paracou, Piste de Saint-Elie and Nouragues are denoted PAR, PSE and NOU.
+(ref:GuyaDivMap) The GuyaDiv network of tropical forest plots.
 ```{r GuyaDivMap, fig.cap="(ref:GuyaDivMap)", include=TRUE}
 knitr::include_graphics('images/GuyaDiv2021.jpg')
 ```
