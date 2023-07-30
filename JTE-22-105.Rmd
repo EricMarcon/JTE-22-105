@@ -11,11 +11,11 @@ author:
     authsuperscript: "3"
 affiliation:
   - affsuperscript: 1
-    dptuniv: "AgroParisTech, AMAP, CIRAD, CNRS, INRAE, IRD, Univ Montpellier, Montpellier, France."
+    dptuniv: "AgroParisTech, UMR AMAP, CIRAD, CNRS, INRAE, IRD, Univ Montpellier, Montpellier, France."
   - affsuperscript: 2
     dptuniv: "Department of Biology, Western University, ON, Canada"
   - affsuperscript: 3
-    dptuniv: "AMAP, IRD, CIRAD, CNRS, INRAE, Univ Montpellier, Montpellier, France."
+    dptuniv: "UMR AMAP, IRD, CIRAD, CNRS, INRAE, Univ Montpellier, Montpellier, France."
   - affsuperscript: 4
     dptuniv: "UMR EcoFoG, AgroParisTech, CIRAD, CNRS, INRAE, Univ Antilles, Univ Guyane, Kourou, France."
 corrauthor:
@@ -951,7 +951,7 @@ On the log-log representation of figure \@ref(fig:harte2009sar), the species-are
 The arguments for overestimation are the same as those against the extrapolation of the log-series at the regional scale.
 
  
-## The number of species is around `r round(S/100)*100`
+## The number of species is around 2200
 
 Finally, our estimations of the number of tree species in the 8-million-hectare forest of French Guiana is close to `r round(S/100)*100`, with a quite wide confidence interval due to the variability in the estimation of both the number of trees in a squared kilometer and the power-law parameter.
 Their distribution is highly unequal: `r hdSpecies` species (`r round(hdSpecies / S * 100)`%) contain half the trees.
