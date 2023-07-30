@@ -23,10 +23,10 @@ corrauthor:
 abstract: >
   The biodiversity of tropical rainforest is difficult to assess. 
   Yet, its estimation is necessary for conservation purposes, to evaluate our level of knowledge and the risks faced by the forest in relation to global change. Our contribution is to estimate the regional richness of tree species from local but widely spread inventories.
-  GuyaDiv is a network of forest plots installed over the whole territory of French Guiana, where trees over 10 cm DBH are identified. We use its information (1315 species censused in 68 one-hectare plots) to estimate the exponent of the species-area relationship, assuming Arrhenius’s power law. 
-  We can then extrapolate the number of species from three local, wide inventories (over 2.5 km^2^).
-  We evaluate the number of tree species around 2200 over the territory.
-keywords: [Biodiversity, Tropical Forest, Self Similarity, French Guiana]
+  We reviewed the methods available, which are nonparametric estimators based on abundance or occurrence data, log-series extrapolation and the universal species-area relationship based on maximum entropy. Appropriate methods depend on the scale considered. Harte's self-similarity model is suitable at the regional scale, while the log-series extrapolation is not.
+  GuyaDiv is a network of forest plots installed over the whole territory of French Guiana, where trees over 10 cm DBH are identified. We used its information (1315 species censused in 68 one-hectare plots) to estimate the exponent of the species-area relationship, assuming Arrhenius’s power law. We could then extrapolate the number of species from three local, wide inventories (over 2.5 km^2^).
+  We evaluated the number of tree species around 2200 over the territory.
+keywords: [Biodiversity, Tropical Forest, Self-Similarity, French Guiana]
 date: "`r format(Sys.time(), '%Y %B %d')`"
 archive: "`r format(Sys.time(), '%d %B %Y')`"
 url: https://github.com/EricMarcon/GF-Richness
@@ -38,16 +38,16 @@ csl: JTropEcol.cls
 toc-depth: 2
 always_allow_html: yes
 output:
-  bookdown::pdf_book:
-    template: latex/template.tex
-    citation_package: natbib
-    latex_engine: xelatex
-    keep_tex: no
   bookdown::html_document2:
     base_format: distill::distill_article
     pandoc_args: ["--number-sections"]
     toc: yes
     toc_float: yes
+  bookdown::pdf_book:
+    template: latex/template.tex
+    citation_package: natbib
+    latex_engine: xelatex
+    keep_tex: no
   bookdown::word_document2:
      reference_docx: "images/template.docx"
 ---
@@ -127,7 +127,7 @@ Based on similar datasets, the diversity of tree species has been estimated in A
 The methods used in those studies are not appropriate to estimate regional diversity, i.e. at a smaller scale where dispersal limitation is critical.
 
 The main contribution of this paper is to estimate the number of tree species at the regional scale, in French Guiana (8 million hectares of tropical moist forest with no ecological boundary to distinguish them from the rest of Amazonia) and demonstrate which method is valid to do so.
-We build on Harte's self similarity model [@Harte1999] that implies the power-law relationship of @Arrhenius1921 and provides a technique to evaluate its parameters [@Harte1999a], previously applied by @Krishnamani2004 in the Western Ghats, India, a 60,000-ha tropical forest with around 1,000 species.
+We build on Harte's self-similarity model [@Harte1999] that implies the power-law relationship of @Arrhenius1921 and provides a technique to evaluate its parameters [@Harte1999a], previously applied by @Krishnamani2004 in the Western Ghats, India, a 60,000-ha tropical forest with around 1,000 species.
 
 We also compare this method to several alternatives: nonparametric estimators including the grid-aggregated occurrence-based estimation by @CazzollaGatti2022, log-series extrapolation [@TerSteege2013] and the universal species-area relationship based on maximum entropy [@Harte2009].
 We discuss in depth which method may be applied according to the addressed scale.
