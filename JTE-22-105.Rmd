@@ -987,8 +987,8 @@ The variance of their product $XY$ is
 \begin{equation} 
   \begin{split}
     \mathrm{Var}(XY) &= \mathbb{E}(X^2Y^2) -\mathbb{E}^2(XY) \\
-                     &= \mathbb{E}(X^2)\mathbb{E}(Y^2) +\mathrm{Cov}(X^2,Y^2) \\
-                     &\quad -[\mathbb{E}(X)\mathbb{E}(Y) +\mathrm{Cov}(X,Y)]^2.
+                     &= \mathbb{E}(X^2) \mathbb{E}(Y^2) + \mathrm{Cov}(X^2,Y^2) \\
+                     &\quad -[\mathbb{E}(X) \mathbb{E}(Y) +\ mathrm{Cov}(X,Y)]^2.
   \end{split}
   (\#eq:varprod)
 \end{equation}
@@ -997,11 +997,11 @@ If $X$ and $Y$ are independent (this applies to $c$ and $A^z$), covariances are 
 
 \begin{equation} 
   \begin{split}
-    \mathrm{Var}(XY)&= \mathbb{E}(X^2)\mathbb{E}(Y^2) -[\mathbb{E}(X)\mathbb{E}(Y)]^2 \\
-                    &= [\mathrm{Var}(X)+\mathbb{E}(X)^2][\mathrm{Var}(Y)+\mathbb{E}(Y)^2] \\
-                    &\quad -[\mathbb{E}(X)E(Y)]^2 \\
-                    &= \mathrm{Var}(X)\mathrm{Var}(Y) \\
-                    &\quad +E(X)^2\mathrm{Var}(Y) +E(Y)^2\mathrm{Var}(X).
+    \mathrm{Var}(XY)&= \mathbb{E}(X^2) \mathbb{E}(Y^2) -[\mathbb{E}(X) \mathbb{E}(Y)]^2 \\
+                    &= [\mathrm{Var}(X) + \mathbb{E}(X)^2][\mathrm{Var}(Y) + \mathbb{E}(Y)^2] \\
+                    &\quad - [\mathbb{E}(X) \mathbb{E}(Y)]^2 \\
+                    &= \mathrm{Var}(X) \mathrm{Var}(Y) \\
+                    &\quad + \mathbb{E}(X)^2 \mathrm{Var}(Y) + \mathbb{E}(Y)^2 \mathrm{Var}(X).
   \end{split}
   (\#eq:varprodind)
 \end{equation}
