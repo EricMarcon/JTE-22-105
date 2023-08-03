@@ -34,4 +34,4 @@
 packages.bib
 *.rsa
 
-docs/
+# docs/
