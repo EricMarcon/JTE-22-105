@@ -19,7 +19,7 @@ affiliation:
   - affsuperscript: 4
     dptuniv: "UMR EcoFoG, AgroParisTech, CIRAD, CNRS, INRAE, Univ Antilles, Univ Guyane, Kourou, France."
 corrauthor:
-    email: eric.marcon@agroparistech.fr
+  email: eric.marcon@agroparistech.fr
 abstract: >
   The biodiversity of tropical rainforest is difficult to assess. 
   Yet, its estimation is necessary for conservation purposes, to evaluate our level of knowledge and the risks faced by the forest in relation to global change. Our contribution is to estimate the regional richness of tree species from local but widely spread inventories.
@@ -28,12 +28,11 @@ abstract: >
   
   GuyaDiv is a network of forest plots installed over the whole territory of French Guiana, where trees over 10 cm DBH are identified. We used its information (1315 species censused in 68 one-hectare plots) to estimate the exponent of the species-area relationship, assuming Arrhenius’s power law. We could then extrapolate the number of species from three local, wide inventories (over 2.5 km^2^).
   We evaluated the number of tree species around 2200 over the territory.
-
 keywords: [Biodiversity, Tropical Forest, Self-Similarity, French Guiana]
 date: "`r format(Sys.time(), '%Y %B %d')`"
 archive: "`r format(Sys.time(), '%d %B %Y')`"
-url: https://github.com/EricMarcon/GF-Richness
-github-repo: EricMarcon/GF-Richness
+url: https://github.com/EricMarcon/JTE-22-105
+github-repo: EricMarcon/JTE-22-105
 lang: en-US
 bibliography: references.bib
 biblio-style: chicago
@@ -43,7 +42,6 @@ always_allow_html: yes
 output:
   bookdown::html_document2:
     base_format: distill::distill_article
-    pandoc_args: ["--number-sections"]
     toc: yes
     toc_float: yes
   bookdown::pdf_book:
@@ -95,20 +93,20 @@ InstallPackages(Packages)
 
 # knitr options
 knitr::opts_chunk$set(
-  cache=TRUE, # Cache chunk results
-  echo=FALSE, # Show/Hide R chunks
-  include=FALSE, # Show/Hide R chunks and result
-  warning=FALSE, # Show/Hide warnings
-  message=FALSE, # Show/Hide messages
+  cache =   TRUE,     # Cache chunk results
+  include = FALSE,    # Show/Hide chunks
+  echo =    FALSE,    # Show/Hide code
+  warning = FALSE,    # Show/Hide warnings
+  message = FALSE,    # Show/Hide messages
   # Figure alignment and size
-  fig.align='center', out.width='80%',
+  fig.align = 'center', out.width = '80%',
   # Graphic devices (ragg_png is better than standard png)
   dev = c("ragg_png", "pdf"),
   # Code chunk format
-  tidy=TRUE, tidy.opts=list(blank=FALSE, width.cutoff=50),
-  size="scriptsize", knitr.graphics.auto_pdf=TRUE
+  tidy = TRUE, tidy.opts = list(blank=FALSE, width.cutoff=50),
+  size = "scriptsize", knitr.graphics.auto_pdf = TRUE
   )
-options(width=50)
+options(width = 50)
 
 # ggplot style
 library("tidyverse")
@@ -120,6 +118,7 @@ knitr::opts_chunk$set(dev.args=list(bg="transparent"))
 # Random seed
 set.seed(973)
 ```
+
 
 # Introduction
 
@@ -991,7 +990,7 @@ The variance of their product $XY$ is
   \begin{split}
     \mathrm{Var}(XY) &= \mathbb{E}(X^2Y^2) -\mathbb{E}^2(XY) \\
                      &= \mathbb{E}(X^2) \mathbb{E}(Y^2) + \mathrm{Cov}(X^2,Y^2) \\
-                     &\quad -[\mathbb{E}(X) \mathbb{E}(Y) +\ mathrm{Cov}(X,Y)]^2.
+                     &\quad -[\mathbb{E}(X) \mathbb{E}(Y) +\mathrm{Cov}(X,Y)]^2.
   \end{split}
   (\#eq:varprod)
 \end{equation}
