@@ -13,7 +13,7 @@ Harte's self-similarity model is suitable at the regional scale, while the log-s
 
 GuyaDiv is a network of forest plots installed over the whole territory of French Guiana, where trees over 10 cm DBH are identified. 
 We used its information (1315 species censused in 68 one-hectare plots) to estimate the exponent of the species-area relationship, assuming Arrhenius’s power law. 
-We could then extrapolate the number of species from three local, wide inventories (over 2.5 km^2^).
+We could then extrapolate the number of species from three local, wide inventories (over 2.5 km²).
 We evaluated the number of tree species around 2200 over the territory.
 
 [Read](https://ericmarcon.github.io/JTE-22-105/JTE-22-105.html) or [download](https://ericmarcon.github.io/JTE-22-105/JTE-22-105.pdf).
