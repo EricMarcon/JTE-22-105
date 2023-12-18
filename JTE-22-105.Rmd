@@ -99,6 +99,7 @@ Packages <- c(
   "ggrepel",
   "ggspatial",
   "nleqslv", 
+  "rlang",
   "secret", 
   "sf",
   "SPECIES",
@@ -739,10 +740,40 @@ n_species <- as.integer(-EA50lm$coefficients[1] / EA50lm$coefficients[2] + lengt
 
 # Plot
 EA75 <- abd_est[1:round(length(abd_est) * 3 / 4)]
-plot(abd_est, ylim = c(1, max(EA75)), xlim = c(0, n_species), col = "grey")
-points(EA75)
-Extra <- exp(EA50lm$coefficients[1]) * cumprod(rep(exp(EA50lm$coefficients[2]), n_species-round(length(abd_est) / 4) + 1))
-lines(x=round(length(abd_est) / 4):n_species, y = Extra, col = "red")
+# Extrapolated abundances
+Extra <- exp(
+  EA50lm$coefficients[1]) * 
+  cumprod(
+    rep(
+      exp(EA50lm$coefficients[2]), 
+      n_species-round(length(abd_est) / 4) + 1
+    )
+  )
+ggplot() +
+  # Extrapolation
+  geom_point(
+    data = data.frame(
+      x = round(length(abd_est) / 4) + seq_along(Extra), 
+      y = Extra
+    ), 
+    mapping = aes(x = x, y = y),
+    color = "red"
+  ) +
+  # Observed species
+  geom_point(
+    data = data.frame(x = seq_along(abd_est), y = abd_est), 
+    mapping = aes(x = x, y = y),
+    color = "grey"
+  ) +
+  # First 75%
+  geom_point(
+    data = data.frame(x = seq_along(EA75), y = EA75), 
+    mapping = aes(x = x, y = y),
+  ) +
+  scale_y_log10() +
+  # Set X axis values
+  scale_x_continuous(labels = rlang::as_function(~ .x + 1)) +
+  labs(x = "Rank", y = "Abundance")
 ```
 
 The estimated number of species according to this model is `r n_species`.
@@ -1088,13 +1119,18 @@ The total number of species is estimated according to the self-similarity model.
 (ref:hyperdominance) Accumulation of the number of individuals from the most abundant to the rarest species. The horizontal line corresponds to half the individuals. The vertical line allows reading the corresponding rank of the species. Unobserved species are not represented on the curve.
 ```{r hyperdominance, fig.cap="(ref:hyperdominance)", include=TRUE}
 # Hyperdominance
-plot(cumsum(as.numeric(abd_est)), ylim = c(0, n_trees), xlab = "Rank", ylab = "Cumulated Number of Trees", axes = FALSE)
-axis(1, axTicks(1) + 1)
-axis(2)
-box()
-abline(h = n_trees / 2, lty = 2, col = "red")
-hdSpecies <- min(which(cumsum(as.numeric(abd_est)) > n_trees / 2))
-abline(v = hdSpecies, lty = 2, col = "red")
+data.frame(
+      x = seq_along(abd_est), 
+      y = cumsum(as.numeric(abd_est))
+    ) %>% 
+  ggplot() +
+    # Extrapolation
+    geom_point(aes(x = x, y = y)) +
+    geom_hline(yintercept = n_trees / 2, lty = 2, col = "red") +
+    geom_vline(xintercept = hdSpecies, lty = 2, col = "red") +
+    # Set X axis values
+    scale_x_continuous(labels = rlang::as_function(~ .x + 1)) +
+    labs(x = "Rank", y = "Cumulated Number of Trees")
 ```
 
 Only `r hdSpecies` species, i.e. `r round(hdSpecies / S * 100)`% of their estimated number, contain half the number of trees.
