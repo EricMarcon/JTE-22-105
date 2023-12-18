@@ -36,3 +36,7 @@ packages.bib
 
 # docs/
 docs/images
+
+# Land cover and gadms
+data/WorldCover_trees_30s.tif
+data/gadm/*
