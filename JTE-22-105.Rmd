@@ -71,28 +71,40 @@ InstallPackages <- function(Packages) {
 }
 
 # Basic packages
-InstallPackages(c("bookdown", "formatR", "kableExtra", "ragg"))
-
-# kableExtra must be loaded 
-if (knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx") {
-  # Word output (https://stackoverflow.com/questions/35144130/in-knitr-how-can-i-test-for-if-the-output-will-be-pdf-or-word)
-  # Do not use autoformat (https://github.com/haozhu233/kableExtra/issues/308)
-  options(kableExtra.auto_format = FALSE)
-}
-library("kableExtra")
+InstallPackages(c("bookdown", "formatR", "ragg"))
 
 # Chunk font size hook: allows size='small' or any valid Latex font size in chunk options
-def.chunk.hook  <- knitr::knit_hooks$get("chunk")
-knitr::knit_hooks$set(chunk = function(x, options) {
-  x <- def.chunk.hook(x, options)
-  ifelse(options$size != "normalsize", paste0("\n \\", options$size,"\n\n", x, "\n\n \\normalsize"), x)
-})
+def.chunk.hook <- knitr::knit_hooks$get("chunk")
+knitr::knit_hooks$set(
+  chunk = function(x, options) {
+    x <- def.chunk.hook(x, options)
+    ifelse(
+      options$size != "normalsize", 
+      paste0("\n \\", options$size,"\n\n", x, "\n\n \\normalsize"),
+      x
+    )
+  }
+)
 ```
 
 ```{r Options, include=FALSE}
 ### Customized options for this document
 # Add necessary packages here
-Packages <- c("ade4", "broom", "dbmss", "entropart", "nleqslv", "secret", "tidyverse", "SPECIES")
+Packages <- c(
+  "ade4", 
+  "broom", 
+  "dbmss", 
+  "entropart", 
+  "geodata", 
+  "ggrepel",
+  "ggspatial",
+  "nleqslv", 
+  "secret", 
+  "sf",
+  "SPECIES",
+  "tidyterra",
+  "tidyverse" 
+)
 # Install them
 InstallPackages(Packages)
 
@@ -108,7 +120,7 @@ knitr::opts_chunk$set(
   # Graphic devices (ragg_png is better than standard png)
   dev = c("ragg_png", "pdf"),
   # Code chunk format
-  tidy = TRUE, tidy.opts = list(blank=FALSE, width.cutoff=50),
+  tidy = FALSE, tidy.opts = list(blank=FALSE, width.cutoff=50),
   size = "scriptsize", knitr.graphics.auto_pdf = TRUE
   )
 options(width = 50)
@@ -116,9 +128,11 @@ options(width = 50)
 # ggplot style
 library("tidyverse")
 theme_set(theme_bw())
-theme_update(panel.background=element_rect(fill="transparent", colour=NA),
-             plot.background=element_rect(fill="transparent", colour=NA))
-knitr::opts_chunk$set(dev.args=list(bg="transparent"))
+theme_update(
+  panel.background = element_rect(fill = "transparent", colour = NA),
+  plot.background = element_rect(fill = "transparent", colour = NA)
+)
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
 # Random seed
 set.seed(973)
@@ -176,9 +190,75 @@ It now consists of 243 plots of various sizes and shapes, distributed in various
 We took into account the `r guyadiv_plots` one-hectare plots of the network. 
 They are located in `r guyadiv_locations` sites, which provides fairly good coverage of the variability of the forest in French Guiana.
 
-(ref:GuyaDivMap) The GuyaDiv network of tropical forest plots. All trees above 10 cm DBH are localized, measured and determined botanically at species level. Each red point represents a location where several forest plots were established. The size of the points corresponds to the total area of theirs plots. Paracou, Piste de Saint-Elie and Nouragues are denoted PAR, PSE and NOU.
+(ref:GuyaDivMap) The GuyaDiv network of tropical forest plots, 1-ha plots only. All trees above 10 cm DBH are localized, measured and determined botanically at species level. Each circle represents a location where several forest plots were established: the circle size is proportional to the number of plots. Paracou, Piste de Saint-Elie and Nouragues large inventories locations are shown (Paracou contains no 1-ha GuyaDiv plot). The map background represents the tree cover, as of ESA Land Cover [@Zanaga2021].
 ```{r GuyaDivMap, fig.cap="(ref:GuyaDivMap)", include=TRUE}
-knitr::include_graphics('images/GuyaDiv2021.jpg')
+# knitr::include_graphics('images/GuyaDiv2021.jpg')
+library("sf")
+# Plots
+Plots %>%
+  group_by(Location) %>%
+  summarise(nb = n(), x = mean(as.numeric(X_UTM)), y = mean(Y_UTM)) %>%
+  # Convert UTM to lat/long
+  st_as_sf(coords = c("x", "y"), crs = "+proj=utm +zone=22") %>%
+  st_transform(crs = 4326) ->
+  mapped_plots
+
+# Large inventories
+"data/stations.csv" %>% 
+  read_csv2() %>% 
+  # Convert UTM to lat/long
+  st_as_sf(coords = c("Xutm", "Yutm"), crs = "+proj=utm +zone=22") %>%
+  st_transform(crs = 4326) ->
+  stations
+
+# Land cover. Download only if necessary (file is 500 MB)
+library("geodata")
+library("terra")
+if (!file.exists("data/gufCover_trees_30s.tif")) {
+  # Download the forest land cover 
+  landcover(var = "trees", path = "data") %>% 
+    # Crop it to French guiana
+    terra::crop(guf_terra, mask = TRUE) %>%
+    writeRaster(filename = "data/gufCover_trees_30s.tif")
+}
+
+library("tidyterra")
+library("ggrepel")
+library("ggspatial")
+ggplot() +
+  # Tree cover
+  geom_spatraster(
+    data = rast("data/gufCover_trees_30s.tif"),
+    alpha = 0.9
+  ) +
+  scale_fill_gradientn(
+    colours = terrain.colors(8),
+    trans = 'reverse',
+    na.value = NA
+  ) +
+  # Plots
+  geom_sf(
+    data = mapped_plots,
+    aes(size = nb),
+    col = "blue",
+    alpha = 0.5
+  ) +
+  # Stations
+  geom_label_repel(
+    data = stations,
+    aes(label = Station, geometry = geometry),
+    stat = "sf_coordinates",
+    min.segment.length = 0,
+    alpha = 0.8
+  ) +
+  labs(size = "# Plots", fill = "Tree cover", x ="", y = "") +
+  # Scale bar
+  annotation_scale(location = 'br') +
+  # North arrow
+  annotation_north_arrow(
+    location = 'tr',
+    style = north_arrow_fancy_orienteering()
+  )
 ```
 
 
