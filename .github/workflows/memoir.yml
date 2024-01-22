@@ -42,7 +42,7 @@ jobs:
     needs: render
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@4
+        uses: actions/download-artifact@v4
         with:
           name: ghpages
           path: docs
