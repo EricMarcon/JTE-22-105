@@ -157,15 +157,6 @@ We discuss in depth which method may be applied according to the addressed spati
 
 # Methods
 
-```{r vault}
-library("tidyverse")
-# Decrypt the vault
-library("secret")
-name_project <- "GF-Richness"
-vault <- "vault"
-Sys.setenv(USER_KEY = usethis::proj_path(paste0(name_project, ".rsa")))
-```
-
 ## Data
 
 To apply the methods detailed below, a large enough inventory is necessary along with a set of small, widely spread forest plots.
@@ -173,12 +164,9 @@ We gathered 3 local, large inventories to account for environmental variability 
 
 ```{r GuyaDiv}
 # Plots: code, location, X, Y
-Plots <- get_secret("Plots", vault = vault)
+Plots <- read_csv2("data/plots.csv")
 # Abundances of species in each plot
-Abundances <- get_secret("Abundances", vault = vault)
-# Eliminate undetermined species
-cf <- grepl("cf.", colnames(Abundances))
-Abundances <- Abundances[, !cf]
+Abundances <- read_csv2("data/abundances.csv")
 # Number of plots
 guyadiv_plots <- nrow(Plots)
 # Number of locations
@@ -190,6 +178,7 @@ Since the installation of the first plots in 1986, the GuyaDiv network has conti
 It now consists of 243 plots of various sizes and shapes, distributed in various forest types, in 30 sites across French Guiana (figure \@ref(fig:GuyaDivMap)). 
 We took into account the `r guyadiv_plots` one-hectare plots of the network. 
 They are located in `r guyadiv_locations` sites, which provides fairly good coverage of the variability of the forest in French Guiana.
+They contain 43081 trees among which 415 were removed from the analyses because they could not be assigned to a species or morphospecies. 
 
 (ref:GuyaDivMap) The GuyaDiv network of tropical forest plots, 1-ha plots only. All trees above 10 cm DBH are localized, measured and determined botanically at species level. Each circle represents a location where several forest plots were established: the circle size is proportional to the number of plots. Paracou, Piste de Saint-Elie and Nouragues large inventories locations are shown (Paracou contains no 1-ha GuyaDiv plot). The map background represents the tree cover, as of ESA Land Cover [@Zanaga2021].
 ```{r GuyaDivMap, fig.cap="(ref:GuyaDivMap)", include=TRUE}
@@ -260,21 +249,6 @@ ggplot() +
     location = 'tr',
     style = north_arrow_fancy_orienteering()
   )
-```
-
-
-```{r Paracou, eval=FALSE}
-# Extrapolation of species with confidence >=2 in the database
-# All plots
-paracou_area <- (15 * 6.25 + 25) / 100
-paracou_envelope <- 3.5
-# From Paracou database
-# Abundances of species in each plot
-Paracou_abd <- get_secret("Paracou_abd", vault = vault)
-# Extrapolate richness to the envelope area
-library("entropart")
-paracou_S <- round(Diversity(Paracou_abd, q = 0, 
-                Level = round(paracou_envelope / paracou_area*sum(Paracou_abd))))
 ```
 
 ```{r b}
