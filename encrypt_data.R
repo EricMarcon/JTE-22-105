@@ -1,4 +1,4 @@
-# Data enryption ####
+# Data encryption ----
 # Encrypt private data in a public repository
 # data are stored in a vault that requires the project's private key to be read
 # GitHub Actions read the key in a project secret
@@ -6,7 +6,7 @@
 # .gitignore: *.rsa and data/
 
 
-## Installation of packages if necessary ####
+## Installation of packages if necessary ----
 InstallPackages <- function(Packages) {
   InstallPackage <- function(Package) {
     if (!Package %in% installed.packages()[, 1]) {
@@ -17,13 +17,13 @@ InstallPackages <- function(Packages) {
 }
 InstallPackages(c("secret", "tidyverse"))
 
-# Data encryption ####
+# Data encryption ----
 name_project <- "GF-Richness"
 name_github_user <- "EricMarcon"
 # If the GitHub user has several keys, which one to use? 1 by default.
 index_github_user <- 3
 
-## Create the vault ####
+## Create the vault ----
 library("secret")
 library("openssl")
 # Create a vault
@@ -36,7 +36,7 @@ add_user(name_project, public_key = rsa_project, vault = vault)
 # Project's owner (public key on GitHub)
 add_github_user(name_github_user, vault = vault, i = index_github_user)
 
-## Prepare the data  ####
+## Prepare the data  ----
 library("tidyverse")
 # GuyaDiv 1-ha plots
 read_csv2("data/ParcellesGUYADIV_2021.csv") %>%
@@ -59,13 +59,13 @@ read_csv2("data/Paracou.csv", col_names=FALSE) %>%
   pull(X1) ->
   Paracou_abd
 
-## Store secrets ####
+## Store secrets ----
 add_secret("Plots", value = Plots, users = c(paste0("github-", name_github_user), name_project), vault = vault)
 add_secret("Abundances", value = Abundances, users = c(paste0("github-", name_github_user), name_project), vault = vault)
 add_secret("Paracou_abd", value = Paracou_abd, users = c(paste0("github-", name_github_user), name_project), vault = vault)
 
 
-# Test ####
+# Test ----
 list_secrets(vault = vault)
 list_owners("Plots", vault = vault)
 list_owners("Abundances", vault = vault)
