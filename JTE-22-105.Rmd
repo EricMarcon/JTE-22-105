@@ -181,7 +181,7 @@ They are located in `r guyadiv_locations` sites, which provides fairly good cove
 They contain 43081 trees among which 415 were removed from the analyses because they could not be assigned to a species or morphospecies. 
 
 (ref:GuyaDivMap) The GuyaDiv network of tropical forest plots, 1-ha plots only. All trees above 10 cm DBH are localized, measured and determined botanically at species level. Each circle represents a location where several forest plots were established: the circle size is proportional to the number of plots. Paracou, Piste de Saint-Elie and Nouragues large inventories locations are shown (Paracou contains no 1-ha GuyaDiv plot). The map background represents the tree cover, as of ESA Land Cover [@Zanaga2021].
-```{r GuyaDivMap, fig.cap="(ref:GuyaDivMap)", include=TRUE}
+```{r GuyaDivMap, fig.cap="(ref:GuyaDivMap)", include=TRUE, out.width = '100%'}
 # knitr::include_graphics('images/GuyaDiv2021.jpg')
 library("sf")
 # Plots
