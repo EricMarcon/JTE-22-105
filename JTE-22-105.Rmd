@@ -25,7 +25,7 @@ abstract: >
   Yet, its estimation is necessary for conservation purposes, to evaluate our level of knowledge and the risks faced by the forest in relation to global change. 
   Our contribution is to estimate the regional richness of tree species from local but widely spread inventories.
   
-  We reviewed the methods available, which are nonparametric estimators based on abundance or inceidence data, log-series extrapolation and the universal species-area relationship based on maximum entropy. 
+  We reviewed the methods available, which are nonparametric estimators based on abundance or incidence data, log-series extrapolation and the universal species-area relationship based on maximum entropy. 
   Appropriate methods depend on the scale considered. 
   Harte's self-similarity model is suitable at the regional scale, while the log-series extrapolation is not.
   
@@ -149,11 +149,11 @@ Biodiversity assessment in tropical moist forests is a practical challenge but a
 Estimating the number of tree species is made possible by the long-term effort of sampling resulting in thousands of forest plots organized in various networks [@ForestPlots.net2021] and a set of methods to apply to their data.
 
 At the local scale, the number of species is related to the sampling effort by species-accumulation curves [@Gotelli2001].
-The number of sampled species is a matter of well-known statistics based on independent and identically distributed samples (i.i.d.), and estimators of the total number of species of a homogeneous community are available, among which the best known are Chao's [@Chao1984] and the jackknife [@Burnham1978].
+The number of sampled species is a matter of well-known statistics based on independent and identically distributed (iid) samples, and estimators of the total number of species of a homogeneous community are available, among which the best known are Chao's [@Chao1984] and the jackknife [@Burnham1978].
 These estimators can be applied to incidence data (i.e. the number of sampled plots that contain a given species) as well as abundance data (the number of sampled individuals of a given species).
-Yet, these tools fail to estimate regional diversity because increasing the sampled area implies including new, different communities, preventing i.i.d. sampling in practise.
+Yet, these tools fail to estimate regional diversity because increasing the sampled area implies including new, different communities, preventing iid sampling in practice.
 
-Yet, @CazzollaGatti2022 successfully applied the incidence-based Chao estimator to 1-by-1 degree cells (each cell considered as a plot) covering all forests in the world to assess the number of tree species at the scale of continents.
+Yet, @CazzollaGatti2022 successfully applied the incidence-based Chao estimator to 100- by 100-km cells (each cell considered as a plot) covering all forests in the world to assess the number of tree species at the scale of continents.
 The method requires huge datasets to avoid undersampling and sampling biases.
 
 At very large scales, the unified neutral theory of biodiversity and biogeography [@Hubbell2001] implies that the distribution of the metacommunity's species abundances is in log-series [@Fisher1943], allowing the extrapolation of the rank-abundance curve of sampled species up to the rarest one, represented by a single individual and counting the number of necessary species.

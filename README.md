@@ -7,7 +7,7 @@ The biodiversity of tropical rainforest is difficult to assess.
 Yet, its estimation is necessary for conservation purposes, to evaluate our level of knowledge and the risks faced by the forest in relation to global change. 
 Our contribution is to estimate the regional richness of tree species from local but widely spread inventories.
 
-We reviewed the methods available, which are nonparametric estimators based on abundance or occurrence data, log-series extrapolation and the universal species-area relationship based on maximum entropy.
+We reviewed the methods available, which are nonparametric estimators based on abundance or incidence data, log-series extrapolation and the universal species-area relationship based on maximum entropy.
 Appropriate methods depend on the scale considered. 
 Harte's self-similarity model is suitable at the regional scale, while the log-series extrapolation is not.
 
