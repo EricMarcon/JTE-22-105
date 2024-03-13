@@ -121,7 +121,7 @@ knitr::opts_chunk$set(
   warning = FALSE,    # Show/Hide warnings
   message = FALSE,    # Show/Hide messages
   # Figure alignment and size
-  fig.align = 'center', out.width = '80%',
+  fig.align = 'center', out.width = '100%',
   # Graphic devices (ragg_png is better than standard png)
   dev = c("ragg_png", "pdf"),
   # Code chunk format
@@ -135,7 +135,8 @@ library("tidyverse")
 theme_set(theme_bw())
 theme_update(
   panel.background = element_rect(fill = "transparent", colour = NA),
-  plot.background = element_rect(fill = "transparent", colour = NA)
+  plot.background = element_rect(fill = "transparent", colour = NA), 
+  plot.margin = grid::unit(c(0,0,0,0), "mm")
 )
 knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
@@ -201,7 +202,7 @@ They contain 43081 trees among which 415 were removed from the analyses because 
 #| label: GuyaDivMap
 #| fig.cap: "(ref:GuyaDivMap)"
 #| include: TRUE
-#| out.width: 100%
+#| out.width: 120%
 # knitr::include_graphics('images/GuyaDiv2021.jpg')
 library("sf")
 # Plots
