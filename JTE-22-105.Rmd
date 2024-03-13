@@ -25,7 +25,7 @@ abstract: >
   Yet, its estimation is necessary for conservation purposes, to evaluate our level of knowledge and the risks faced by the forest in relation to global change. 
   Our contribution is to estimate the regional richness of tree species from local but widely spread inventories.
   
-  We reviewed the methods available, which are nonparametric estimators based on abundance or occurrence data, log-series extrapolation and the universal species-area relationship based on maximum entropy. 
+  We reviewed the methods available, which are nonparametric estimators based on abundance or inceidence data, log-series extrapolation and the universal species-area relationship based on maximum entropy. 
   Appropriate methods depend on the scale considered. 
   Harte's self-similarity model is suitable at the regional scale, while the log-series extrapolation is not.
   
@@ -58,7 +58,9 @@ output:
      reference_docx: "images/template.docx"
 ---
 
-```{r DoNotModify, include=FALSE}
+```{r}
+#| label: DoNotModify
+#| include: false
 ### Utilities. Do not modify.
 # Installation of packages if necessary
 InstallPackages <- function(Packages) {
@@ -87,7 +89,9 @@ knitr::knit_hooks$set(
 )
 ```
 
-```{r Options, include=FALSE}
+```{r}
+#| label: Options
+#| include: false
 ### Customized options for this document
 # Add necessary packages here
 Packages <- c(
@@ -139,21 +143,30 @@ knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 set.seed(973)
 ```
 
-
 # Introduction
 
 Biodiversity assessment in tropical moist forests is a practical challenge but a major goal considering they are the most diverse terrestrial ecosystems.
-Estimating the number of tree species is made possible by the long-term effort of sampling resulting in thousands of forest plots organized in various networks. 
-In French Guiana, the GuyaDiv network consists of close to 250 plots across the whole forest.
-Based on similar datasets, the diversity of tree species has been estimated in Amazonia [@TerSteege2013; @TerSteege2020] and at the world scale [@Slik2015] and, with a different methodology, by @CazzollaGatti2022.
-Regional diversity, i.e. at a intermediate scales between single communities and the metacommunity in the sense of @Hubbell2001, brought less attention: this motivated this study, along with a particular interest for the forest of French Guiana.
+Estimating the number of tree species is made possible by the long-term effort of sampling resulting in thousands of forest plots organized in various networks [@ForestPlots.net2021] and a set of methods to apply to their data.
+
+At the local scale, the number of species is related to the sampling effort by species-accumulation curves [@Gotelli2001].
+The number of sampled species is a matter of well-known statistics based on independent and identically distributed samples (i.i.d.), and estimators of the total number of species of a homogeneous community are available, among which the best known are Chao's [@Chao1984] and the jackknife [@Burnham1978].
+These estimators can be applied to incidence data (i.e. the number of sampled plots that contain a given species) as well as abundance data (the number of sampled individuals of a given species).
+Yet, these tools fail to estimate regional diversity because increasing the sampled area implies including new, different communities, preventing i.i.d. sampling in practise.
+
+Yet, @CazzollaGatti2022 successfully applied the incidence-based Chao estimator to 1-by-1 degree cells (each cell considered as a plot) covering all forests in the world to assess the number of tree species at the scale of continents.
+The method requires huge datasets to avoid undersampling and sampling biases.
+
+At very large scales, the unified neutral theory of biodiversity and biogeography [@Hubbell2001] implies that the distribution of the metacommunity's species abundances is in log-series [@Fisher1943], allowing the extrapolation of the rank-abundance curve of sampled species up to the rarest one, represented by a single individual and counting the number of necessary species.
+Based on this method, the diversity of tree species has been estimated in Amazonia [@TerSteege2013; @TerSteege2020] and at the world scale [@Slik2015].
+
+Regional diversity, i.e. at a intermediate scales between single communities and the metacommunity, brought less attention.
+The large and spatially uniform datasets necessary to apply incidence data extrapolation are not easy to gather so alternative methods must be considered: this motivated this study, along with a particular interest for the forest of French Guiana.
 
 The main contribution of this paper is to estimate the number of tree species at the regional scale, in French Guiana (8 million hectares of tropical moist forest with no ecological boundary to distinguish them from the rest of Amazonia) and demonstrate which method is valid to do so.
 We build on Harte's self-similarity model [@Harte1999] that implies the power-law relationship of @Arrhenius1921 and provides a technique to evaluate its parameters [@Harte1999a], previously applied by @Krishnamani2004 in the Western Ghats, India, a 60,000-ha tropical forest with around 1,000 tree species.
 
-We also compare this method to several alternatives: nonparametric estimators including the grid-aggregated occurrence-based estimation by @CazzollaGatti2022, log-series extrapolation [@TerSteege2013] and the universal species-area relationship based on maximum entropy [@Harte2009].
+We also compare this method to all methods reviewed above and the lesser-known, scale-independent universal species-area relationship based on maximum entropy [@Harte2009].
 We discuss in depth which method may be applied according to the addressed spatial scale.
-
 
 # Methods
 
@@ -162,7 +175,9 @@ We discuss in depth which method may be applied according to the addressed spati
 To apply the methods detailed below, a large enough inventory is necessary along with a set of small, widely spread forest plots.
 We gathered 3 local, large inventories to account for environmental variability and a network of plot covering the whole region.
 
-```{r GuyaDiv}
+```{r}
+#| label: GuyaDiv
+library("tidyverse")
 # Plots: code, location, X, Y
 Plots <- read_csv2("data/plots.csv")
 # Abundances of species in each plot
@@ -174,14 +189,19 @@ guyadiv_locations <- length(unique(Plots$Location))
 ```
 
 Our plot network is GuyaDiv [@Engel2015].
-Since the installation of the first plots in 1986, the GuyaDiv network has continuously grown until today. 
-It now consists of 243 plots of various sizes and shapes, distributed in various forest types, in 30 sites across French Guiana (figure \@ref(fig:GuyaDivMap)). 
-We took into account the `r guyadiv_plots` one-hectare plots of the network. 
-They are located in `r guyadiv_locations` sites, which provides fairly good coverage of the variability of the forest in French Guiana.
-They contain 43081 trees among which 415 were removed from the analyses because they could not be assigned to a species or morphospecies. 
+Since the installation of the first plots in 1986, the GuyaDiv network has continuously grown until today.
+It now consists of 243 plots of various sizes and shapes, distributed in various forest types, in 30 sites across French Guiana.
+We took into account the `r guyadiv_plots` one-hectare plots of the network (figure \@ref(fig:GuyaDivMap)).
+They are located in `r guyadiv_locations` sites, which provides fairly good coverage of the variability of the forest.
+They contain 43081 trees among which 415 were removed from the analyses because they could not be assigned to a species or morphospecies.
 
 (ref:GuyaDivMap) The GuyaDiv network of tropical forest plots, 1-ha plots only. All trees above 10 cm DBH are localized, measured and determined botanically at species level. Each circle represents a location where several forest plots were established: the circle size is proportional to the number of plots. Paracou, Piste de Saint-Elie and Nouragues large inventories locations are shown (Paracou contains no 1-ha GuyaDiv plot). The map background represents the tree cover, as of ESA Land Cover [@Zanaga2021].
-```{r GuyaDivMap, fig.cap="(ref:GuyaDivMap)", include=TRUE, out.width = '100%'}
+
+```{r}
+#| label: GuyaDivMap
+#| fig.cap: "(ref:GuyaDivMap)"
+#| include: TRUE
+#| out.width: 100%
 # knitr::include_graphics('images/GuyaDiv2021.jpg')
 library("sf")
 # Plots
@@ -251,7 +271,8 @@ ggplot() +
   )
 ```
 
-```{r b}
+```{r}
+#| label: b
 # Number of species and envelope area
 paracou_S <- 571 + 575 - 443 + 37
 paracou_envelope <- 4.84
@@ -276,7 +297,6 @@ As a whole, we gathered `r PSE_S` species in a `r PSE_envelope`-km^2^ area.
 Nouragues research station [@Bongers2001] provides 22 hectares of permanent plots.
 We applied the same protocol, adding 11 Guyadiv plots and herbarium collections up to `r NOU_S` species in a `r NOU_envelope`-km^2^ area.
 
-
 ## Self-similarity
 
 Self-similarity [@Harte1999] is a property based on scale invariance.
@@ -289,11 +309,12 @@ In other words, the conditional probability to find a species in a sub-area, giv
 The Arrhenius power law [@Arrhenius1921] both implies and is a consequence of the self-similarity property [@Harte1999].
 The number of species $\mathrm{S}(A)$ observed in an area $A$ is
 
+```{=tex}
 \begin{equation}
   \mathrm{S}(A)=cA^z
   (\#eq:Arrhenius)
 \end{equation}
-
+```
 where $z$ is the power parameter and $c$ is the number of species in an area of size 1.
 Actually, $a=2^{-z}$.
 This is a classical relation in macroecology, with long empirical and theoretical support [@Williamson2001; @GarciaMartin2006].
@@ -304,27 +325,29 @@ Then, $\mathrm{S}(A)$ can be calculated for any value of $A$.
 @Harte1999a showed that under the assumption of self-similarity, $z$ can be inferred from the dissimilarity between small and distant plots of equal size distributed across the area.
 The @Sorensen1948 similarity between two plots is
 
+```{=tex}
 \begin{equation}
   \chi = 2 (S_1 \cap S_2) / (S_1 + S_2)
   (\#eq:Sorensen)
 \end{equation}
-
+```
 where $S_1$ (respectively $S_2$) is the number of species in plot 1 (resp. plot 2) and $S_1 \cap S_2$ is the number of common species.
 
 Applied to plots of the same size separated by distance $d$, Sørensen's similarity decreases with distance following the relation $\chi \sim d^{-2z}$ [@Harte1999a] that can be estimated by the linear model
 
+```{=tex}
 \begin{equation}
   \log(\chi) \sim \log(d).
   (\#eq:estimatez)
 \end{equation}
-
+```
 The logarithm of the Sørensen dissimilarity between pairs of plots can be regressed against the logarithm of the distance between the plots: the slope of the regression is $-2z$.
 
 The relation \@ref(eq:estimatez) holds at the same scale as the power law, i.e. at the regional scale [@Grilli2012].
 @Krishnamani2004 estimated $z \approx 0.12$ with a very good fit to the linear model at distances up from 1 km but not below.
 
-
-```{r n_simulations}
+```{r}
+#| label: n_simulations
 # Number of simulations to run
 n_simulations <- 1000L
 ```
@@ -336,19 +359,19 @@ We estimated $z$ as half the coefficient of the distance variable in the linear 
 We repeated these steps `r n_simulations` times to obtain a distribution of estimated $z$ values depending on the plots drawn in each location.
 $z$ was estimated as the empirical mean of the distribution and its 95% confidence interval was obtained by eliminating the 2.5% extreme values on both tails.
 
-```{r FrenchGuiana}
+```{r}
+#| label: FrenchGuiana
 # Extrapolation area in square km
 A0 <- 80000
 ```
 
 The confidence interval of the estimation of the number of species was assessed by combining the uncertainty in $c$ and $A^z$.
-The variance of $c$ was estimated by the empirical variance of the values calculated at Paracou, Piste de Saint-Elie and Nouragues. 
+The variance of $c$ was estimated by the empirical variance of the values calculated at Paracou, Piste de Saint-Elie and Nouragues.
 That of $A^z$ was obtained from the empirical distribution of $z$.
 The variance of their product was calculated (the formula and its derivation are in the appendix).
 Finally, we assumed the normality of the distribution of the product of the estimates to retain an approximate 95% confidence interval of $\pm$ 2 standard deviations.
 
 All analyses were made with R [@R] v. 4.3.1.
-
 
 ## Nonparametric estimators
 
@@ -358,11 +381,12 @@ After replacing the sampled area by the number of individuals it contains, well-
 
 The Chao1 estimator is
 
+```{=tex}
 \begin{equation}
   {\hat{S}}_{\mathit{Chao1}} = s_{obs} + \frac{(n-1)f_1^2}{2nf_2},
   (\#eq:Chao1)
 \end{equation}
-
+```
 where $s_{obs}$ is the number of observed species, $n$ is the sample size, $f_1$ and $f_2$ the number of species observed once and twice.
 Since $n$ is large, $(n-1)/2n$ can be approximated by $1/2$.
 
@@ -371,18 +395,17 @@ The estimator of order $k$ includes $f_1, f_2, ..., f_k$, the number of species 
 Increasing the order implies increasing both the estimate and its uncertainty: starting from order 1, the order is incremented as long as the new estimator is significantly higher than the previous one [@Burnham1978].
 For large $n$, the jackknife estimator of order 3, used below, is
 
+```{=tex}
 \begin{equation}
   {\hat{S}}_{\mathit{Jack3}} = s_{obs} + 3f_1 - 3f_2 + f_3.
   (\#eq:Jack3)
 \end{equation}
-
-
-An alternative, following @CazzollaGatti2022, consists of paving the territory with a grid whose size does not change the estimation, say 100 km. 
-In each 100 by 100 km cell of the grid, all available data is aggregated to obtain an occurrence dataset.
+```
+An alternative, following @CazzollaGatti2022, consists of paving the territory with a grid whose size does not change the estimation, say 100 km.
+In each 100 by 100 km cell of the grid, all available data is aggregated to obtain an incidence dataset.
 The Chao2 estimator (whose formula is identical to that of Chao1, with $n$ equal to the number of grid cells) is finally applied: it combines the number of species observed in only one or two cells to estimate the number of unobserved species.
 
 The Chao and Jackknife estimators variance can be estimated and a confidence interval is available [@Chao1987; @Burnham1978].
-
 
 ## Log-series extrapolation
 
@@ -402,8 +425,7 @@ The number of species is finally counted.
 
 Its confidence interval is not available: the extrapolation of the curve is very robust, but the estimation of the total number of trees and of the probabilities of species are sources of uncertainty.
 
-
-## Universal species-area relationship 
+## Universal species-area relationship
 
 @Harte2008 derived a universal species-area relationship based on the maximum entropy theory.
 Assuming only that the area, the total numbers of species and individuals, and the summed metabolic energy rate of all individuals are fixed, many features of the species distribution at any scale can be predicted.
@@ -416,12 +438,12 @@ To be consistent with the model, the geometric mean is applied: its logarithm eq
 Each step of the estimation consists of doubling the area and calculating the new number of species.
 This operation is repeated until the target area (8 Mha) is reached, i.e. between 15 times for Paracou (the largest inventory: `r paracou_envelope * 100` ha) and 24 times for the 1-ha plots.
 
-
 # Results
 
 ## Self-similarity
 
-```{r estimate_z}
+```{r}
+#| label: estimate_z
 library("ade4")
 library("broom")
 library("dbmss")
@@ -492,7 +514,8 @@ estimate_z <- function() {
 }
 ```
 
-```{r bootstrap_z}
+```{r}
+#| label: bootstrap_z
 if (interactive()) {
   # Prepare a progress bar
   pgb <- txtProgressBar(min=0, max=n_simulations)
@@ -527,7 +550,11 @@ All pairs of plots more than 1 km apart (the scale of Paracou's 0.625-km^2^ inve
 Actually, the estimation of $z$ was made as explained in the methods by `r n_simulations` random draws of sets of a single random plot per location.
 
 (ref:slope) Relation between Sørensen's similarity and the distance between pairs of plots. Both axes are in base-10 logarithms, distances are in meters. Each point is a pair of plots more than 1000 m ($10^3$) apart, up to 377 km. A linear model is fitted: the slope of the regression is $-2z$.
-```{r slope, fig.cap="(ref:slope)", include=TRUE}
+
+```{r}
+#| label: slope
+#| fig.cap: "(ref:slope)"
+#| include: true
 library("ade4")
 library("dbmss")
 
@@ -565,7 +592,8 @@ tibble(Sorensen=as.numeric(log10(Sorensen)),
 
 The estimated value of $z$ is `r z %>% round(3) %>% format(nsmall=3)` with a 95% confidence interval between `r z_ci[1] %>% round(3) %>% format(nsmall=3)` and `r z_ci[2] %>% round(3) %>% format(nsmall=3)`.
 
-```{r estimate_c}
+```{r}
+#| label: estimate_c
 # From 3 sites
 c_paracou <- paracou_S / paracou_envelope^z
 c_PSE <- PSE_S / PSE_envelope^z
@@ -576,7 +604,8 @@ c_est <- (c_paracou + c_PSE + c_NOU) / 3
 The estimated number of species per square kilometer, $c$, is respectively `r c_paracou %>% round(0)`, `r c_PSE %>% round(0)` and `r c_NOU %>% round(0)` in Paracou, Piste de Saint-Elie and Nouragues.
 The average value is `r c_est %>% round(0)`.
 
-```{r estimate_S}
+```{r}
+#| label: estimate_S
 # Estimated number of species
 S <- c_est * A0^z
 # Confidence interval
@@ -592,7 +621,8 @@ Taking into account the uncertainty about $c$ and $z$, its 95% confidence interv
 
 ## Species accumulation
 
-```{r jackknife}
+```{r}
+#| label: jackknife
 library("entropart")
 Community <- colSums(Abundances[, -1])
 S_best <- Richness(Community)
@@ -602,11 +632,13 @@ j3 <- SPECIES::jackknife(AbdFreqCount(Community))
 ```
 
 The observed number of species is `r sum(Community>0)` among which `r sum(Community==1)` and `r sum(Community==2)` are sampled once and twice.
-The lower-bound estimation of the number of species by the Chao1 estimator is `r round(S_Chao1)`. 
+The lower-bound estimation of the number of species by the Chao1 estimator is `r round(S_Chao1)`.
 The best jackknife estimator (of order 3) is `r S_best`.
 Its confidence interval is between `r j3$CI[1]` and `r j3$CI[2]` at the 5% risk level.
 
-```{r Chao2, include=FALSE}
+```{r}
+#| label: Chao2
+#| include: false
 # Group plots in a grid
 group_plots <- function(Plots, grid_x, grid_y) {
   xy_grid <- matrix(0, nrow=nrow(Plots), ncol=2)
@@ -665,10 +697,10 @@ S_Chao2 <- gridded_richness(
 The Chao2 estimator applied to the same plots aggregated into 100 x 100 km cells is `r round(S_Chao2)`.
 Its confidence interval is between `r attr(S_Chao2, "CI")$CI[1]` and `r attr(S_Chao2, "CI")$CI[2]` at the 5% risk level.
 
-
 ## Log-series extrapolation
 
-```{r n_trees}
+```{r}
+#| label: n_trees
 # Number of trees = area x number of trees per 1-ha plot
 n_ha_arithmetic <- mean(rowSums(Abundances[, -1]))
 n_trees <- round(A0 * 100 * n_ha_arithmetic)
@@ -677,7 +709,8 @@ n_trees <- round(A0 * 100 * n_ha_arithmetic)
 The mean number of trees per ha in the Guyadiv 1-ha plots is `r round(n_ha_arithmetic)`.
 There are close to `r round(n_trees/1E9)` billion trees in French Guiana.
 
-```{r chao2015}
+```{r}
+#| label: chao2015
 p_est_plots <- as.data.frame(Abundances[, -1])
 p_est_plots[, ] <- 0
 
@@ -700,7 +733,11 @@ The most abundant tree species is *`r names(abd_est[1])`* with around `r round(a
 The log-abundances of the 25 to 75 percentiles of species are linearly related to the rank, allowing the extrapolation of the curve (the red line).
 
 (ref:logseries) Extrapolation of the rank-abundance curve built from the GuyaDiv plots. Extrapolated abundances (in log scale) of observed species are plotted against the rank of their species. The abundances of unobserved species (the red curve) is extrapolated linearly from the center 50% of the distribution of the observed species. The rarest 25%, ignored for the extrapolation, are plotted as grey points.
-```{r logseries, fig.cap="(ref:logseries)", include=TRUE}
+
+```{r}
+#| label: logseries
+#| fig.cap: "(ref:logseries)"
+#| include: true
 # Central 50% of the curve
 EA50 <- as.AbdVector(abd_est[round(length(abd_est) / 4):round(length(abd_est) * 3 / 4)])
 x <- seq_along(EA50)
@@ -752,10 +789,12 @@ ggplot() +
 
 The estimated number of species according to this model is `r n_species`.
 
+## Universal species-area relationship
 
-## Universal species-area relationship 
-
-```{r harte2009, include=FALSE}
+```{r}
+#| label: harte2009
+#| fig.cap: "(ref:logseries)"
+#| include: false
 library("nleqslv")
 
 # Estimate the number of species according to successive doubling number of individuals
@@ -895,10 +934,14 @@ The method from @Harte2009 is applied to our data.
 The geometric mean number of trees per hectare estimated from the Guyadiv network is `r round(n_ha_geometric)` trees/ha.
 
 Initial inventories, e.g. `r paracou_S` trees species in `r paracou_envelope*100` ha in Paracou and the geometric mean number of species in Guyadiv plots, are the starting points of the estimation.
-Figure \@ref(fig:harte2009sar) shows the species-area curves obtained by succesive doubling of the areas.
+Figure \@ref(fig:harte2009sar) shows the species-area curves obtained by successive doubling of the areas.
 
 (ref:harte2009sar) Extrapolation of the initial inventories up to 8 Mha (vertical line, assuming `r round(n_ha_geometric)` trees/ha). The vertical line corresponds to the area of French Guiana. Curves are the estimated species-area curves from the Guyadiv 1-ha plots (solid line), Nouragues (dot-dashed line), Piste de Saint-Elie (dashed-line) and Paracou (dotted line) starting points. Estimated values are marked as vertical lines on the curves.
-```{r harte2009sar, fig.cap="(ref:harte2009sar)", include=TRUE}
+
+```{r}
+#| label: harte2009sar
+#| fig.cap: "(ref:harte2009sar)"
+#| include: true
 ggplot() +
   geom_line(data=Nouragues, aes(x = n, y = s), lty = 4) +
   geom_point(data=Nouragues, aes(x = n, y = s), shape = "|") +
@@ -917,17 +960,17 @@ ggplot() +
 The curves are almost perfectly fitted by a Michaelis-Menten model, estimated by the linear model [@Lineweaver1934] $\frac{1}{\log{S}} \sim \frac{1}{\log{n}}$, where $S$ is the number of species and $n$ the number of trees, allowing a very accurate interpolation at any number of trees.
 The estimated number of species is thus obtained for $n$ equal to 8 Mha times `r round(n_ha_geometric)` trees per ha:
 
-- From Nouragues: `r round(s_8Mha_Nouragues)` species.
-- From Piste de Saint-Elie: `r round(s_8Mha_St_Elie)` species.
-- From Paracou: `r round(s_8Mha_Paracou)` species.
+-   From Nouragues: `r round(s_8Mha_Nouragues)` species.
+-   From Piste de Saint-Elie: `r round(s_8Mha_St_Elie)` species.
+-   From Paracou: `r round(s_8Mha_Paracou)` species.
 
 The extrapolation from the average 1-ha plot is `r round(s_8Mha_Guyadiv)` species.
-Since it is far less reliable than those from the wide inventories, with 7 to 9 more doubling steps, we do not retain it to produce the average estimate of the universal SAR. Finally, we obtain `r round((s_8Mha_Nouragues + s_8Mha_St_Elie + s_8Mha_Paracou) / 3)` species.
-
+Since it is far less reliable than those from the wide inventories, with 7 to 9 more doubling steps, we do not retain it to produce the average estimate of the universal SAR.
+Finally, we obtain `r round((s_8Mha_Nouragues + s_8Mha_St_Elie + s_8Mha_Paracou) / 3)` species.
 
 # Discussion
 
-## The species-area relationship varies accross scales
+## The species-area relationship varies across scales
 
 We consider three different spatial scales where different models apply.
 
@@ -948,7 +991,8 @@ Theoretically, @Hubbell2001 showed that the power law applied to intermediate sc
 @Preston1962 showed that local, log-normal communities imply the power law at the regional scale.
 At this scale, the species-area relationship (SAR) properly speaking is not just a matter of accumulation due to sampling (SAC) but the consequence of the inclusion of different communities.
 
-A long empirical controversy [@Connor1979] opposed Arrhenius and @Gleason1922, who argued that the number of species predicted by the power law was far too high and proposed $\mathrm{S}(A)=z\ln A + c_g$ rather than the equivalent of eq. \@ref(eq:Arrhenius), i.e. $\ln \mathrm{S}(A)=z\ln A + c_a$ (where $c_g$, $c_a$ and $c_f$ below are constants).
+A long empirical controversy [@Connor1979] opposed Arrhenius and @Gleason1922, who argued that the number of species predicted by the power law was far too high and proposed $\mathrm{S}(A)=z\ln A + c_g$ rather than the equivalent of eq.
+\@ref(eq:Arrhenius), i.e. $\ln \mathrm{S}(A)=z\ln A + c_a$ (where $c_g$, $c_a$ and $c_f$ below are constants).
 Actually, Gleason's model is equivalent to Fisher's, where $\mathrm{S}(A)=\alpha\ln A + c_f$ if the number of trees is large and is proportional to the area [@Engen1977].
 There is no theoretical support to apply Gleason's model at the regional scale [@GarciaMartin2006]; in other words, the regional distribution of species is not log-series.
 
@@ -963,9 +1007,8 @@ The limits between scales are obviously not sharp.
 @Krishnamani2004 found that $z$ stabilized when plots more than 1 km apart were considered.
 We followed them here.
 Increasing the regional scale makes it converge to the metacommunity.
-In absence of dispersal limitation, i.e. with migration parameter equal to 1 in the neutral theory, any regional sample would represent the metacommunity and follow a log-series distribution. 
-So the wider the sampled area, the less distinguishable from the metacommunity the data will be, but at the scale of French Guiana, roughly 1% of Amazonia, many less species are present than in a sample of the same size taken accross the whole metacommunity, even if we ignore environmental filtering.
-
+In absence of dispersal limitation, i.e. with migration parameter equal to 1 in the neutral theory, any regional sample would represent the metacommunity and follow a log-series distribution.
+So the wider the sampled area, the less distinguishable from the metacommunity the data will be, but at the scale of French Guiana, roughly 1% of Amazonia, many less species are present than in a sample of the same size taken across the whole metacommunity, even if we ignore environmental filtering.
 
 ## The self-similarity model can be applied at the regional scale
 
@@ -981,18 +1024,16 @@ The theory does not address habitat variation, that is well-described in French 
 The dissimilarity between plot pairs is thus explained by distance and habitat dissimilarity, with the latter ignored in the model.
 Yet, the estimation of $z$ is quite robust because the GuyaDiv network covers a wide range of habitats, allowing to cancel out local variability.
 Adding more plots or describing a few more species in the previous plots may not change $z$ significantly since it is obtained from the dissimilarity between plots.
-Its value `r z %>% round(3) %>% format(nsmall=3)` is in line with that of @Krishnamani2004 in another tropical forest: it is very small compared to the classical 0.25 of @Arrhenius1921 or 0.263 of @Preston1962. 
+Its value `r z %>% round(3) %>% format(nsmall=3)` is in line with that of @Krishnamani2004 in another tropical forest: it is very small compared to the classical 0.25 of @Arrhenius1921 or 0.263 of @Preston1962.
 This was discussed by @MacArthur1967, chapter 2.
 The power law applies to embedded scales of the same ecosystem here, in contrast to the usual sets of isolated islands providing the data [@Triantis2012]: in our case, the number of species increases less with the area, leading to smaller $z$ values.
 
-The critical aspect of the estimation is the accuracy of the starting point of the extrapolation, that mainly depends on the representativeness of the local inventories
-Again, the self-similarity model assumes that $c$, the number of species per square kilometer, is the same everywhere.
+The critical aspect of the estimation is the accuracy of the starting point of the extrapolation, that mainly depends on the representativeness of the local inventories Again, the self-similarity model assumes that $c$, the number of species per square kilometer, is the same everywhere.
 Local, observed values must be understood as variations around the real $c$, that should be estimated by replicating inventories across the whole region.
 This is of course restricted by the huge resources needed to settle a single one: three replicates are an exceptional amount of data.
 Paracou, Piste de Saint-Elie and Nouragues represent quite well the variability of local richness of the forest of French Guiana.
 We made a strict selection of the data to count the numbers of species, which are thus lower bounds.
 Ongoing efforts of botanists may increase a bit the value of $c$, implying a proportional increase in the estimation of the number of species.
-
 
 ## Chao2's estimator is a valid alternative
 
@@ -1007,10 +1048,9 @@ Yet, increasing the sampling effort would not be enough: mixing local samples (t
 @CazzollaGatti2022 applied a similar method on a large-scale grid (100 x 100 km cells) where species occurrences were reported in each cell.
 Considering each cell as a plot, the Chao2 estimator [@Chao1987] allows estimating the total richness.
 The practical advantage of this approach is the opportunity to combine several sources of occurrence data to improve the sampling coverage.
-Theoretically, it is far more robust than the mixture of abundance data: the local distribution of each plot is cancelled out by its transformation into occurrence data.
+Theoretically, it is far more robust than the mixture of abundance data: the local distribution of each plot is cancelled out by its transformation into inceidence data.
 An appropriate spatial distribution of sampling plots, covering all habitats or at least a regular grid in absence of more detailed knowledge, can be seen as a valid sampling.
 When applied to our data, aggregated in 100-km square cells, the estimation is similar to that obtained directly from the abundance data of the plots because of undersampling but the method must not be rejected.
-
 
 ## Log series extrapolations are not valid at the regional scale
 
@@ -1023,33 +1063,32 @@ In other words, the regional community is not a sample of the metacommunity: man
 As a consequence, the log-series estimation of the richness of a regional species pool leads to severe overestimation.
 For the same reasons, hyperdominance is less pronounced: `r round(hdSpecies / S * 100)`% of the species contain half the trees (figure \@ref(fig:hyperdominance) in the appendix), compared to 1.4% in Amazonia as a whole [@TerSteege2013].
 
-The universal species-area relationship [@Harte2008] allowed the extrapolation of observed richness up to the  8 million hectares of French Guiana.
+The universal species-area relationship [@Harte2008] allowed the extrapolation of observed richness up to the 8 million hectares of French Guiana.
 The number of species estimated from Paracou, Piste de Saint-Elie and Nouragues starting points (their number of species and area) is on average `r round((s_8Mha_Nouragues + s_8Mha_St_Elie + s_8Mha_Paracou) / 3)`, and over 4500 when extrapolating from an average Guyadiv 1-ha plot.
 Again, this model implies a log-series distribution as it integrates as few assumptions as possible [@Harte2008].
 On the log-log representation of figure \@ref(fig:harte2009sar), the species-area relationships are never linear, as predicted by the power law at the regional scale.
 The arguments for overestimation are the same as those against the extrapolation of the log-series at the regional scale.
 
- 
 ## The number of species is around `r round(S/100)*100`
 
 Finally, our estimations of the number of tree species in the 8-million-hectare forest of French Guiana is close to `r round(S/100)*100`, with a quite wide confidence interval due to the variability in the estimation of both the number of trees in a square kilometer and the power-law parameter.
 Their distribution is highly unequal: `r hdSpecies` species (`r round(hdSpecies / S * 100)`%) contain half the trees.
 
-A recent work [@Molino2022] lists nearly 1800 species of indigenous trees in French Guiana, based on herbarium collections on the one hand, and on data from the GuyaDiv and GuyaFor plot networks [@Engel2015] on the other. 
-However, this checklist is only a state of the art of our knowledge of the tree flora. 
-Even in the most intensively explored areas, botanists conducting botanical inventories have identified a number of entities that are morphologically distinct from all known species in French Guiana, and which they therefore consider to be still unnamed species. 
-They gave them provisional names (e.g. *Pouteria* sp. A), until more information is available to either recognize species known in other parts of the world, or to describe them and give them a valid name according to the Code of Nomenclature. 
-The GuyaDiv and GuyaFor databases together currently list more than 300 of these unnamed species, but @Molino2022 selected only 143 of them for their checklist, the ones that were best characterized and best illustrated by good quality herbarium specimens. 
-Although it cannot be excluded that some of the other 150-200 unnamed species are in fact simple morphological variants of already described species, they believe that most of them represent distinct species. 
-In other words, the number of known species in French Guiana (named and unnamed) is probably already close to 2000. 
-Furthermore, the available data is very unevenly distributed across the territory. 
-The south and especially the north-west of French Guiana are poorly explored botanically (few inventory plots, relatively few herbarium specimens), while their floras are significantly different from the better inventoried northern and central zones. 
-It is thus very likely that the exploration of these little-known areas will add new species to the list. 
-Therefore, the estimate of `r S %>% round(0)` spp. given here seems quite plausible, given the state of our knowledge.
+A recent work [@Molino2022] lists nearly 1800 species of indigenous trees in French Guiana, based on herbarium collections on the one hand, and on data from the GuyaDiv and GuyaFor plot networks [@Engel2015] on the other.
+However, this checklist is only a state of the art of our knowledge of the tree flora.
+Even in the most intensively explored areas, botanists conducting botanical inventories have identified a number of entities that are morphologically distinct from all known species in French Guiana, and which they therefore consider to be still unnamed species.
+They gave them provisional names (e.g. *Pouteria* sp. A), until more information is available to either recognize species known in other parts of the world, or to describe them and give them a valid name according to the Code of Nomenclature.
+The GuyaDiv and GuyaFor databases together currently list more than 300 of these unnamed species, but @Molino2022 selected only 143 of them for their checklist, the ones that were best characterized and best illustrated by good quality herbarium specimens.
+Although it cannot be excluded that some of the other 150-200 unnamed species are in fact simple morphological variants of already described species, they believe that most of them represent distinct species.
+In other words, the number of known species in French Guiana (named and unnamed) is probably already close to 2000.
+Furthermore, the available data is very unevenly distributed across the territory.
+The south and especially the north-west of French Guiana are poorly explored botanically (few inventory plots, relatively few herbarium specimens), while their floras are significantly different from the better inventoried northern and central zones.
+It is thus very likely that the exploration of these little-known areas will add new species to the list.
+Therefore, the estimate of `r S %>% round(0)` spp.
+given here seems quite plausible, given the state of our knowledge.
 
-A improvement perspective is the aggregation of all sources of localized data at the scale of French Guiana, including all Guyadiv plots, the Guyafor network [@Jaouen2021], herbarium collections and various scientific projects, to proceed with an occurrence-based estimation of richness following @CazzollaGatti2022.
+A improvement perspective is the aggregation of all sources of localized data at the scale of French Guiana, including all Guyadiv plots, the Guyafor network [@Jaouen2021], herbarium collections and various scientific projects, to proceed with an inceidence-based estimation of richness following @CazzollaGatti2022.
 A main issue of this approach is the standardization of the taxonomy, already well advanced by @Molino2022, so it may be feasible in a near future.
- 
 
 # Appendix
 
@@ -1059,6 +1098,7 @@ Let $X$ and $Y$ two random variables, here the estimators of $c$ and $A^z$.
 
 The variance of their product $XY$ is
 
+```{=tex}
 \begin{equation} 
   \begin{split}
     \mathrm{Var}(XY) &= \mathbb{E}(X^2Y^2) -\mathbb{E}^2(XY) \\
@@ -1067,9 +1107,10 @@ The variance of their product $XY$ is
   \end{split}
   (\#eq:varprod)
 \end{equation}
-
+```
 If $X$ and $Y$ are independent (this applies to $c$ and $A^z$), covariances are 0 and the variance reduces to
 
+```{=tex}
 \begin{equation} 
   \begin{split}
     \mathrm{Var}(XY)&= \mathbb{E}(X^2) \mathbb{E}(Y^2) -[\mathbb{E}(X) \mathbb{E}(Y)]^2 \\
@@ -1080,8 +1121,7 @@ If $X$ and $Y$ are independent (this applies to $c$ and $A^z$), covariances are 
   \end{split}
   (\#eq:varprodind)
 \end{equation}
-
-
+```
 ## Hyperdominance {#apd-hyperdominance}
 
 Hyperdominance is a characteristic of many distributions of species.
@@ -1091,7 +1131,11 @@ The number of trees and the probabilities of observed species were calculated fo
 The total number of species is estimated according to the self-similarity model.
 
 (ref:hyperdominance) Accumulation of the number of individuals from the most abundant to the rarest species. The horizontal line corresponds to half the individuals. The vertical line allows reading the corresponding rank of the species. Unobserved species are not represented on the curve.
-```{r hyperdominance, fig.cap="(ref:hyperdominance)", include=TRUE}
+
+```{r}
+#| label: hyperdominance
+#| fig.cap: "(ref:hyperdominance)"
+#| include: true
 # Hyperdominance
 data.frame(
       x = seq_along(abd_est), 
