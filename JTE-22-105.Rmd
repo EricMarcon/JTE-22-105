@@ -1091,7 +1091,7 @@ Yet, increasing the sampling effort would not be enough: mixing local samples (t
 @CazzollaGatti2022 applied a similar method on a large-scale grid (100 x 100 km cells) where species occurrences were reported in each cell.
 Considering each cell as a plot, the Chao2 estimator [@Chao1987] allows estimating the total richness.
 The practical advantage of this approach is the opportunity to combine several sources of occurrence data to improve the sampling coverage.
-Theoretically, it is far more robust than the mixture of abundance data: the local distribution of each plot is cancelled out by its transformation into inceidence data.
+Theoretically, it is far more robust than the mixture of abundance data: the local distribution of each plot is cancelled out by its transformation into incidence data.
 An appropriate spatial distribution of sampling plots, covering all habitats or at least a regular grid in absence of more detailed knowledge, can be seen as a valid sampling.
 When applied to our data, aggregated in 100-km square cells, the estimation is similar to that obtained directly from the abundance data of the plots because of undersampling but the method must not be rejected.
 
@@ -1130,7 +1130,7 @@ It is thus very likely that the exploration of these little-known areas will add
 Therefore, the estimate of `r S %>% round(0)` spp.
 given here seems quite plausible, given the state of our knowledge.
 
-A improvement perspective is the aggregation of all sources of localized data at the scale of French Guiana, including all Guyadiv plots, the Guyafor network [@Jaouen2021], herbarium collections and various scientific projects, to proceed with an inceidence-based estimation of richness following @CazzollaGatti2022.
+A improvement perspective is the aggregation of all sources of localized data at the scale of French Guiana, including all Guyadiv plots, the Guyafor network [@Jaouen2021], herbarium collections and various scientific projects, to proceed with an incidence-based estimation of richness following @CazzollaGatti2022.
 A main issue of this approach is the standardization of the taxonomy, already well advanced by @Molino2022, so it may be feasible in a near future.
 
 # Appendix
