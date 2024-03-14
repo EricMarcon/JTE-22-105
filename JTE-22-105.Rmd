@@ -73,7 +73,15 @@ InstallPackages <- function(Packages) {
 }
 
 # Basic packages
-InstallPackages(c("bookdown", "formatR", "ragg"))
+InstallPackages(c("bookdown", "formatR", "kableExtra", "ragg"))
+
+library("kableExtra")
+# kableExtra must be loaded 
+if (knitr::opts_knit$get("rmarkdown.pandoc.to") == "docx") {
+  # Word output (https://stackoverflow.com/questions/35144130/in-knitr-how-can-i-test-for-if-the-output-will-be-pdf-or-word)
+  # Do not use autoformat (https://github.com/haozhu233/kableExtra/issues/308)
+  options(kableExtra.auto_format = FALSE)
+}
 
 # Chunk font size hook: allows size='small' or any valid Latex font size in chunk options
 def.chunk.hook <- knitr::knit_hooks$get("chunk")
@@ -140,6 +148,8 @@ theme_update(
 )
 knitr::opts_chunk$set(dev.args = list(bg = "transparent"))
 
+options(knitr.kable.NA = '')
+
 # Random seed
 set.seed(973)
 ```
@@ -160,13 +170,15 @@ The method requires huge datasets to avoid undersampling and sampling biases.
 At very large scales, the unified neutral theory of biodiversity and biogeography [@Hubbell2001] implies that the distribution of the metacommunity's species abundances is in log-series [@Fisher1943], allowing the extrapolation of the rank-abundance curve of sampled species up to the rarest one, represented by a single individual and counting the number of necessary species.
 Based on this method, the diversity of tree species has been estimated in Amazonia [@TerSteege2013; @TerSteege2020] and at the world scale [@Slik2015].
 
-Regional diversity, i.e. at a intermediate scales between single communities and the metacommunity, brought less attention.
+Regional diversity, i.e. at intermediate scales between single communities and the metacommunity, brought less attention.
 The large and spatially uniform datasets necessary to apply incidence data extrapolation are not easy to gather so alternative methods must be considered: this motivated this study, along with a particular interest for the forest of French Guiana.
 
 The main contribution of this paper is to estimate the number of tree species at the regional scale, in French Guiana (8 million hectares of tropical moist forest with no ecological boundary to distinguish them from the rest of Amazonia) and demonstrate which method is valid to do so.
 We build on Harte's self-similarity model [@Harte1999] that implies the power-law relationship of @Arrhenius1921 and provides a technique to evaluate its parameters [@Harte1999a], previously applied by @Krishnamani2004 in the Western Ghats, India, a 60,000-ha tropical forest with around 1,000 tree species.
+The current checklist contains close to 1800 tree species [@Molino2022] in French Guiana.
+Our estimate is around 2200.
 
-We also compare this method to all methods reviewed above and the lesser-known, scale-independent universal species-area relationship based on maximum entropy [@Harte2009].
+We also compare our work to all methods reviewed above and the lesser-known, scale-independent universal species-area relationship based on maximum entropy [@Harte2009].
 We discuss in depth which method may be applied according to the addressed spatial scale.
 
 # Methods
@@ -969,6 +981,35 @@ The extrapolation from the average 1-ha plot is `r round(s_8Mha_Guyadiv)` specie
 Since it is far less reliable than those from the wide inventories, with 7 to 9 more doubling steps, we do not retain it to produce the average estimate of the universal SAR.
 Finally, we obtain `r round((s_8Mha_Nouragues + s_8Mha_St_Elie + s_8Mha_Paracou) / 3)` species.
 
+## Summary
+
+The estimated number of species according to the different methods is summarized in table \@ref(tab:summary).
+
+```{r}
+#| label: summary
+#| include: true
+tibble(
+  Method = c(
+    "Self-similarity", 
+    "Species accumulation (abundance)",
+    "Species accumulation (incidence)",
+    "Log-series extrapolation",
+    "Universal species-area relationship"
+  ),
+  `Number of species` = c(round(S, 0), S_best, round(S_Chao2), n_species, round((s_8Mha_Nouragues + s_8Mha_St_Elie + s_8Mha_Paracou) / 3, 0)), 
+  `Lower bound` = c(round(S - 2 * sigma_S, 0), j3$CI[1], attr(S_Chao2, "CI")$CI[1], NA, round(s_8Mha_Paracou)), 
+  `Upper bound` = c(round(S + 2 * sigma_S, 0), j3$CI[2], attr(S_Chao2, "CI")$CI[2], NA, round(s_8Mha_Guyadiv))
+) %>% 
+  knitr::kable(
+    caption = "Estimated number of tree species in French Guiana, 
+               according to all methods detailed in the text.
+               Self-similarity is the appropriate method at this scale.", 
+    longtable = TRUE, 
+    booktabs = TRUE
+  ) %>%
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+```
+
 # Discussion
 
 ## The species-area relationship varies across scales
@@ -1029,7 +1070,8 @@ Its value `r z %>% round(3) %>% format(nsmall=3)` is in line with that of @Krish
 This was discussed by @MacArthur1967, chapter 2.
 The power law applies to embedded scales of the same ecosystem here, in contrast to the usual sets of isolated islands providing the data [@Triantis2012]: in our case, the number of species increases less with the area, leading to smaller $z$ values.
 
-The critical aspect of the estimation is the accuracy of the starting point of the extrapolation, that mainly depends on the representativeness of the local inventories Again, the self-similarity model assumes that $c$, the number of species per square kilometer, is the same everywhere.
+The critical aspect of the estimation is the accuracy of the starting point of the extrapolation, that mainly depends on the representativeness of the local inventories.
+Again, the self-similarity model assumes that $c$, the number of species per square kilometer, is the same everywhere.
 Local, observed values must be understood as variations around the real $c$, that should be estimated by replicating inventories across the whole region.
 This is of course restricted by the huge resources needed to settle a single one: three replicates are an exceptional amount of data.
 Paracou, Piste de Saint-Elie and Nouragues represent quite well the variability of local richness of the forest of French Guiana.
