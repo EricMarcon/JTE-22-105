@@ -1,4 +1,3 @@
-![stability-wip](https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg)
 ![rmarkdown](https://github.com/EricMarcon/JTE-22-105/workflows/rmarkdown/badge.svg)
 
 # Estimation of the number of tree species in French Guiana by extrapolation of permanent plots richness.
@@ -17,3 +16,5 @@ We could then extrapolate the number of species from three local, wide inventori
 We evaluated the number of tree species around 2200 over the territory.
 
 [Read](https://ericmarcon.github.io/JTE-22-105/JTE-22-105.html) or [download](https://ericmarcon.github.io/JTE-22-105/JTE-22-105.pdf).
+
+This paper has been accepted for publication by the [Journal of Tropical Ecology](https://www.cambridge.org/core/journals/journal-of-tropical-ecology).
