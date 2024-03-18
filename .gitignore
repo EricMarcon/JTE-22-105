@@ -35,7 +35,7 @@ packages.bib
 *.rsa
 
 # docs/
-docs/images
+docs/
 
 # Land cover and gadms
 data/WorldCover_trees_30s.tif
