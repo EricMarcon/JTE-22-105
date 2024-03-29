@@ -404,7 +404,7 @@ where $s_{obs}$ is the number of observed species, $n$ is the sample size, $f_1$
 Since $n$ is large, $(n-1)/2n$ can be approximated by $1/2$.
 
 The jackknife estimator depends on the sampling level of the data.
-The estimator of order $k$ includes $f_1, f_2, ..., f_k$, the number of species observed up to $k$ times.
+The estimator of order $k$ includes $f_1, f_2, \dots, f_k$, the number of species observed up to $k$ times.
 Increasing the order implies increasing both the estimate and its uncertainty: starting from order 1, the order is incremented as long as the new estimator is significantly higher than the previous one [@Burnham1978].
 For large $n$, the jackknife estimator of order 3, used below, is
 
