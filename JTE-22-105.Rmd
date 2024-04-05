@@ -1000,7 +1000,7 @@ tibble(
   `Lower bound` = c(round(S - 2 * sigma_S, 0), j3$CI[1], attr(S_Chao2, "CI")$CI[1], NA, round(s_8Mha_Paracou)), 
   `Upper bound` = c(round(S + 2 * sigma_S, 0), j3$CI[2], attr(S_Chao2, "CI")$CI[2], NA, round(s_8Mha_Guyadiv))
 ) %>% 
-  knitr::kable(
+  kableExtra::kbl(
     caption = "Estimated number of tree species in French Guiana, 
                according to all methods detailed in the text.
                Self-similarity is the appropriate method at this scale.", 
